@@ -12,7 +12,7 @@ android {
         minSdk = 29
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,6 +33,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    // Habilitar Data Binding
+    //noinspection DataBindingWithoutKapt
+    buildFeatures.dataBinding = true
+
+    // Habilitar View Binding
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -45,4 +54,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation (libs.kotlinx.coroutines.android)
+
+    //Lector
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 }
