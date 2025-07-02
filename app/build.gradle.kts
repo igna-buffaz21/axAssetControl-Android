@@ -56,6 +56,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation (libs.kotlinx.coroutines.android)
 
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
     //Lector
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 }

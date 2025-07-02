@@ -10,8 +10,11 @@ kotlinxCoroutinesAndroid = "1.7.3"
 material = "1.12.0"
 activity = "1.9.0"
 constraintlayout = "2.2.1"
+lifecycle = "2.8.3"  # <- ESTA LÍNEA FALTABA
 
 [libraries]
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

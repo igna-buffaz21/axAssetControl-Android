@@ -26,7 +26,7 @@ import aumax.estandar.axappestandar.utils.Utils
 
 class LecturaRFIDActivity : AppCompatActivity() {
 
-    private lateinit var _binding: ActivityLecturaRfidBinding
+    private lateinit var _binding: ActivityLecturaRfidBinding ///se inicializa despues, no en la declaracion
     private lateinit var _adapter: LecturaRfidAdapter
     private var toast: Toast? = null
     private var _oAxLector: AxLector? = null
@@ -34,11 +34,13 @@ class LecturaRFIDActivity : AppCompatActivity() {
     private var listenerKeyPressUp: IOnKeyPressUp? = null
     private var isReceiverRegistered = false
 
-    private var listTagsLeidos : MutableList<TagRFID> = ArrayList()
+    private var listTagsLeidos : MutableList<TagRFID> = ArrayList() //lista para guardar los tags leidos, es mutable
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        _binding = ActivityLecturaRfidBinding.inflate(layoutInflater)
+        _binding = ActivityLecturaRfidBinding.inflate(layoutInflater) //esto te permite acceder a las distintas propiedades del XML
         setContentView(_binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(_binding.main) { v, insets ->
@@ -47,17 +49,17 @@ class LecturaRFIDActivity : AppCompatActivity() {
             insets
         }
 
-        _oAxLector = AxLector(this@LecturaRFIDActivity, Configuracion.MODO_LECTURA.RFID)
+        _oAxLector = AxLector(this@LecturaRFIDActivity, Configuracion.MODO_LECTURA.RFID) //creamos el objeto que va a manejar todo el RFID
 
-        _adapter = LecturaRfidAdapter()
-        _binding.listReading.adapter = _adapter
-        _binding.listReading.layoutManager = LinearLayoutManager(this)
+        _adapter = LecturaRfidAdapter() //el adapter agarra data y la convierte en un elemento visual
+        _binding.listReading.adapter = _adapter ///agarrar un elemento del DOM y agregale el adapter
+        _binding.listReading.layoutManager = LinearLayoutManager(this) //le decis como organizarlo
 
 
-        setListenerKeyPressDown(object : IOnKeyPressDown {
+        setListenerKeyPressDown(object : IOnKeyPressDown { //CONFIGURO qué hacer cuando se presione la tecla
             override fun keyPress(keyCode: Int, event: KeyEvent?) {
-                if (event!!.repeatCount == 0) {
-                    _oAxLector?.IniciarLecturaRFID()
+                if (event!!.repeatCount == 0) { //evitar repeticiones por mantener presionado
+                    _oAxLector?.IniciarLecturaRFID() //acción a ejecutar
                 }
             }
         })
@@ -79,21 +81,23 @@ class LecturaRFIDActivity : AppCompatActivity() {
         if (!isReceiverRegistered ){
             val filter = IntentFilter()
             filter.addAction("android.rfid.FUN_KEY")
-            registerReceiver(receiver, filter)
+            // AGREGAR LA FLAG:
+            registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
 
             if(Configuracion.tipoHandheld == Configuracion.TIPO_HANDHELD.Linkwin &&
                 _oAxLector?._modoLectura == Configuracion.MODO_LECTURA.Codigo ||
                 _oAxLector?._modoLectura == Configuracion.MODO_LECTURA.Ambas) {
-                val filter = IntentFilter()
-                filter.addAction("com.rfid.SCAN")
-                registerReceiver(receiverCB, filter)
-                isReceiverRegistered = true // Cambiar la bandera a true
+                val filter2 = IntentFilter()
+                filter2.addAction("com.rfid.SCAN")
+                // AGREGAR LA FLAG:
+                registerReceiver(receiverCB, filter2, Context.RECEIVER_NOT_EXPORTED)
+                isReceiverRegistered = true
             }
-        }
+        }  //este bloque activa los detectores de hardware, como botones, para cuando se toquen se ejecute el codigo
     }
 
 
-    override fun onStop() {
+    override fun onStop() { //se ejecuta cuando al app no es visible
         super.onStop()
 
         if (isReceiverRegistered) {
@@ -108,23 +112,24 @@ class LecturaRFIDActivity : AppCompatActivity() {
                 Log.w("Receiver", "receiver no estaba registrado")
             }
             isReceiverRegistered = false
-        }
+        }// este bloque hace lo contrario al Start, 'apaga' los detectores de hardaware
 
     }
 
 
     private fun setListenerKeyPressDown(listener: IOnKeyPressDown) {
-        this.listenerKeyPressDown = listener
+        this.listenerKeyPressDown = listener //aca se guardan las instrucciones que tiene que seguir cuando se hace click en una tecla
     }
+
     private fun setListenerKeyPressUp(listener: IOnKeyPressUp) {
-        this.listenerKeyPressUp = listener
+        this.listenerKeyPressUp = listener //aca se guardan las instrucciones que tiene que seguir cuando se deja de presionar una tecla
     }
 
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         //Log.d("KEY_EVENT", "keyDown: $keyCode")
-        if (keyCode == 139 || keyCode == 280 || keyCode == 293) {
-            if (this.listenerKeyPressDown != null) {
+        if (keyCode == 139 || keyCode == 280 || keyCode == 293) { //distintas teclas del RFID
+            if (this.listenerKeyPressDown != null) { //aca se fija si la funcionalidad esta configurada o no
                 this.listenerKeyPressDown!!.keyPress(keyCode, event)
             }
             return true
@@ -146,6 +151,7 @@ class LecturaRFIDActivity : AppCompatActivity() {
 
     private var startTime: Long = 0
     var keyUpFalg = true
+
     private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             var keyCode = intent.getIntExtra("keyCode", 0)
