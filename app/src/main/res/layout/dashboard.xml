@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="40dp"
+    android:gravity="center"
+    android:background="#FAFAFA">
+
+    <!-- Título del Menú -->
+    <TextView
+        android:id="@+id/tv_menu_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Menú"
+        android:textSize="32sp"
+        android:textStyle="normal"
+        android:textColor="#2C2C2C"
+        android:layout_marginBottom="56dp"
+        android:fontFamily="sans-serif-light"
+        android:letterSpacing="0.05" />
+
+    <!-- Botón 1: Inicio -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_home"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="LecturaRFID"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="#2C2C2C"
+        android:drawablePadding="16dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#FFFFFF"
+        app:cornerRadius="12dp"
+        app:strokeColor="#E0E0E0"
+        app:strokeWidth="1dp"
+        app:iconGravity="textStart"
+        app:elevation="2dp"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <!-- Botón 2: Explorar -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_users"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Ver Usuarios"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="#2C2C2C"
+        android:drawablePadding="16dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#FFFFFF"
+        app:cornerRadius="12dp"
+        app:strokeColor="#E0E0E0"
+        app:strokeWidth="1dp"
+        app:iconGravity="textStart"
+        app:elevation="2dp"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <!-- Botón 3: Favoritos -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_favorites"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="."
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="#2C2C2C"
+        android:drawablePadding="16dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#FFFFFF"
+        app:cornerRadius="12dp"
+        app:strokeColor="#E0E0E0"
+        app:strokeWidth="1dp"
+        app:iconGravity="textStart"
+        app:elevation="2dp"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <!-- Botón 4: Perfil -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Cerrar Sesion"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="#2C2C2C"
+        android:drawablePadding="16dp"
+        android:backgroundTint="#FFFFFF"
+        app:cornerRadius="12dp"
+        app:strokeColor="#E0E0E0"
+        app:strokeWidth="1dp"
+        app:iconGravity="textStart"
+        app:elevation="2dp"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+</LinearLayout>

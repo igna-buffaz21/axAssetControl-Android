@@ -53,7 +53,7 @@ object ChainwaySDK {
         try{
             var res: UHFTAGInfo? = null
 
-            //genero evento indicando que estoy leyengo
+            //genero evento indicando que estoy leyendo
             listenerITagLeido!!.estado(Configuracion.ESTADOS_LECTURA.INICIADO)
 
             var listTagsLeidos : MutableList<TagRFID> = ArrayList<TagRFID>()

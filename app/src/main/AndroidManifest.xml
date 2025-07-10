@@ -2,7 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
+        android:name=".MyApplication"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,20 +17,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AxAppEstandar"
         tools:targetApi="31">
+
+        <!-- Quitar el LAUNCHER de LecturaRFIDActivity -->
         <activity
             android:name=".activitys.LecturaRFIDActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
+        </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity
+            android:name=".activitys.DashboardActivity"
+            android:exported="false"
+            android:label="Dashboard"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".activitys.ShowUsersActivity"
+            android:exported="false">
         </activity>
 
         <activity
             android:name=".activitys.LoginActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -27,7 +27,7 @@ class AxLector(private val context: Context, private val modoLectura : Int) {
     var listenerICodigoLeido: ICodigoLeido? = null
     var _modoLectura = 0
 
-    init {
+    init { //se ejecuta cuando se crea el objeto
         try {
             _modoLectura = modoLectura
             when(Configuracion.tipoHandheld){

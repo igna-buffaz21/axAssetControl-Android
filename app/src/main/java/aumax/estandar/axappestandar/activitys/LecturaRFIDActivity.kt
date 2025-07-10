@@ -27,7 +27,7 @@ import aumax.estandar.axappestandar.utils.Utils
 class LecturaRFIDActivity : AppCompatActivity() {
 
     private lateinit var _binding: ActivityLecturaRfidBinding ///se inicializa despues, no en la declaracion
-    private lateinit var _adapter: LecturaRfidAdapter
+    private lateinit var _adapter: LecturaRfidAdapter //se encarga de mostrar la UI
     private var toast: Toast? = null
     private var _oAxLector: AxLector? = null
     private var listenerKeyPressDown: IOnKeyPressDown? = null
@@ -40,6 +40,7 @@ class LecturaRFIDActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         _binding = ActivityLecturaRfidBinding.inflate(layoutInflater) //esto te permite acceder a las distintas propiedades del XML
         setContentView(_binding.root)
 
@@ -54,7 +55,6 @@ class LecturaRFIDActivity : AppCompatActivity() {
         _adapter = LecturaRfidAdapter() //el adapter agarra data y la convierte en un elemento visual
         _binding.listReading.adapter = _adapter ///agarrar un elemento del DOM y agregale el adapter
         _binding.listReading.layoutManager = LinearLayoutManager(this) //le decis como organizarlo
-
 
         setListenerKeyPressDown(object : IOnKeyPressDown { //CONFIGURO qué hacer cuando se presione la tecla
             override fun keyPress(keyCode: Int, event: KeyEvent?) {
@@ -95,7 +95,6 @@ class LecturaRFIDActivity : AppCompatActivity() {
             }
         }  //este bloque activa los detectores de hardware, como botones, para cuando se toquen se ejecute el codigo
     }
-
 
     override fun onStop() { //se ejecuta cuando al app no es visible
         super.onStop()
@@ -187,18 +186,19 @@ class LecturaRFIDActivity : AppCompatActivity() {
     }
 
     private fun RegistrarEventLecturaTag() {
-        _oAxLector!!.setListenerTagLeido(object : ITagLeidoListener {
+        _oAxLector!!.setListenerTagLeido(object : ITagLeidoListener { //cada vez que se detecta un evento, se dispara este callback
+
             override fun tagsLeidos(listTagsLeidos: MutableList<TagRFID>) {
 
             }
 
-            override fun tagLeido(tagRFID: TagRFID) {
+            override fun tagLeido(tagRFID: TagRFID) { //se ejecuta cada vez que se lee un tag
                 val tagExistente = listTagsLeidos.find { it.TID == tagRFID.TID }
 
                 if (tagExistente != null) {
-                    tagExistente.Count += 1
+                    tagExistente.Count += 1 //si ya se leyo ese tag no agrega
                 } else {
-                    listTagsLeidos.add(tagRFID)
+                    listTagsLeidos.add(tagRFID) //si no se leyo se agrega
                 }
 
                 runOnUiThread {

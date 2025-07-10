@@ -3,4 +3,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="Aumax">#6c263e</color>
+    <color name="background_color">#F5F5F5</color>
+    <color name="text_primary">#1A1A1A</color>
+    <color name="primary_color">#6200EE</color>
+    <color name="secondary_color">#03DAC6</color>
+    <color name="tertiary_color">#FF6B6B</color>
+    <color name="accent_color">#FFC107</color>
 </resources>
