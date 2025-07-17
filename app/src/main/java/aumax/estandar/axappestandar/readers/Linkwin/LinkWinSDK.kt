@@ -2,7 +2,7 @@ package aumax.estandar.axappestandar.readers.Linkwin
 
 import android.app.Application
 import android.util.Log
-import aumax.estandar.axappestandar.interfaces.ITagLeidoListener
+import aumax.estandar.axappestandar.utils.interfaces.ITagLeidoListener
 import aumax.estandar.axappestandar.readers.Chainway.ChainwaySDK
 import aumax.estandar.axappestandar.readers.Configuracion
 import aumax.estandar.axappestandar.utils.TagRFID

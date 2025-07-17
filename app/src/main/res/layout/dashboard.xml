@@ -1,100 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="40dp"
-    android:gravity="center"
-    android:background="#FAFAFA">
+    android:background="#F5F5F5"
+    tools:context=".activitys.DashboardActivity">
 
-    <!-- Título del Menú -->
-    <TextView
-        android:id="@+id/tv_menu_title"
-        android:layout_width="wrap_content"
+    <!-- Contenido principal -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Menú"
-        android:textSize="32sp"
-        android:textStyle="normal"
-        android:textColor="#2C2C2C"
-        android:layout_marginBottom="56dp"
-        android:fontFamily="sans-serif-light"
-        android:letterSpacing="0.05" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="24dp">
 
-    <!-- Botón 1: Inicio -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_home"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="LecturaRFID"
-        android:textSize="16sp"
-        android:textAllCaps="false"
-        android:textColor="#2C2C2C"
-        android:drawablePadding="16dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="#FFFFFF"
-        app:cornerRadius="12dp"
-        app:strokeColor="#E0E0E0"
-        app:strokeWidth="1dp"
-        app:iconGravity="textStart"
-        app:elevation="2dp"
-        style="@style/Widget.Material3.Button.OutlinedButton" />
+        <!-- Logo principal con más espacio -->
+        <ImageView
+            android:id="@+id/logoGolden"
+            android:layout_width="160dp"
+            android:layout_height="75dp"
+            android:layout_marginBottom="32dp"
+            android:scaleType="centerInside" />
 
-    <!-- Botón 2: Explorar -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_users"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Ver Usuarios"
-        android:textSize="16sp"
-        android:textAllCaps="false"
-        android:textColor="#2C2C2C"
-        android:drawablePadding="16dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="#FFFFFF"
-        app:cornerRadius="12dp"
-        app:strokeColor="#E0E0E0"
-        app:strokeWidth="1dp"
-        app:iconGravity="textStart"
-        app:elevation="2dp"
-        style="@style/Widget.Material3.Button.OutlinedButton" />
+        <!-- Título del Menú -->
+        <TextView
+            android:id="@+id/tv_menu_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menú Principal"
+            android:textSize="28sp"
+            android:textStyle="normal"
+            android:textColor="#2C2C2C"
+            android:layout_marginBottom="40dp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.05" />
 
-    <!-- Botón 3: Favoritos -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_favorites"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="."
-        android:textSize="16sp"
-        android:textAllCaps="false"
-        android:textColor="#2C2C2C"
-        android:drawablePadding="16dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="#FFFFFF"
-        app:cornerRadius="12dp"
-        app:strokeColor="#E0E0E0"
-        app:strokeWidth="1dp"
-        app:iconGravity="textStart"
-        app:elevation="2dp"
-        style="@style/Widget.Material3.Button.OutlinedButton" />
+        <!-- Card principal con los botones -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            app:cardElevation="8dp"
+            app:cardUseCompatPadding="true"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="#F8F9FA">
 
-    <!-- Botón 4: Perfil -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_logout"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Cerrar Sesion"
-        android:textSize="16sp"
-        android:textAllCaps="false"
-        android:textColor="#2C2C2C"
-        android:drawablePadding="16dp"
-        android:backgroundTint="#FFFFFF"
-        app:cornerRadius="12dp"
-        app:strokeColor="#E0E0E0"
-        app:strokeWidth="1dp"
-        app:iconGravity="textStart"
-        app:elevation="2dp"
-        style="@style/Widget.Material3.Button.OutlinedButton" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
 
-</LinearLayout>
+                <!-- Botón 1: Lectura RFID -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_home"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Lectura RFID"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="#000000"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    app:rippleColor="#FFFFFF"
+                    app:iconGravity="textStart"
+                    app:iconTint="#FFFFFF" />
+
+                <!-- Botón 2: Ver Usuarios -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_abm"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Agregar Tags"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="#000000"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    app:rippleColor="#FFFFFF"
+                    app:iconGravity="textStart"
+                    app:iconTint="#FFFFFF" />
+
+                <!-- Botón 3: Reportes -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_control"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Control"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="#000000"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    app:rippleColor="#FFFFFF"
+                    app:iconGravity="textStart"
+                    app:iconTint="#FFFFFF" />
+
+                <!-- Botón 4: Configuración -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Configuración"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="#000000"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    app:rippleColor="#FFFFFF"
+                    app:iconGravity="textStart"
+                    app:iconTint="#FFFFFF" />
+
+                <!-- Separador visual -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0"
+                    android:layout_marginVertical="8dp" />
+
+                <!-- Botón 5: Cerrar Sesión -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Cerrar Sesión"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="#2C2C2C"
+                    android:backgroundTint="#FFFFFF"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="#E0E0E0"
+                    app:strokeWidth="1dp"
+                    app:elevation="2dp"
+                    app:rippleColor="#F0F0F0"
+                    app:iconGravity="textStart"
+                    app:iconTint="#666666"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Logo secundario con más espacio -->
+        <ImageView
+            android:id="@+id/logoAumax"
+            android:layout_width="140dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="32dp"
+            android:scaleType="centerInside"
+            android:alpha="0.8" />
+
+    </LinearLayout>
+</FrameLayout>

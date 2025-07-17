@@ -13,11 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import aumax.estandar.axappestandar.Adapters.LecturaRfidAdapter
+import aumax.estandar.axappestandar.utils.adapters.LecturaRfidAdapter
 import aumax.estandar.axappestandar.databinding.ActivityLecturaRfidBinding
-import aumax.estandar.axappestandar.interfaces.IOnKeyPressDown
-import aumax.estandar.axappestandar.interfaces.IOnKeyPressUp
-import aumax.estandar.axappestandar.interfaces.ITagLeidoListener
+import aumax.estandar.axappestandar.utils.interfaces.IOnKeyPressDown
+import aumax.estandar.axappestandar.utils.interfaces.IOnKeyPressUp
+import aumax.estandar.axappestandar.utils.interfaces.ITagLeidoListener
 import aumax.estandar.axappestandar.readers.AxLector
 import aumax.estandar.axappestandar.readers.Configuracion
 import aumax.estandar.axappestandar.utils.TagRFID

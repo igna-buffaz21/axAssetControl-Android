@@ -2,12 +2,9 @@ package aumax.estandar.axappestandar.activitys
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import aumax.estandar.axappestandar.Data.TokenManager
 import aumax.estandar.axappestandar.MyApplication
-import aumax.estandar.axappestandar.MyApplication.Companion.tokenManager
-import aumax.estandar.axappestandar.Repository.Retrofit.UsersRepository
-import aumax.estandar.axappestandar.ViewModel.LoginVM
 import aumax.estandar.axappestandar.databinding.DashboardBinding
 
 class DashboardActivity(
@@ -32,21 +29,17 @@ class DashboardActivity(
         binding.btnHome.setOnClickListener {
             navigateToRFIDActivity()
         }
-        binding.btnUsers.setOnClickListener {
-            navigateToUsers()
+        binding.btnAbm.setOnClickListener {
+            navigateToABM()
+        }
+        binding.btnControl.setOnClickListener {
+            navigateToControl()
         }
         binding.btnLogout.setOnClickListener {
             logOut()
         }
     }
 
-    private fun navigateToUsers() {
-        val intent = Intent(this, ShowUsersActivity::class.java)
-
-        startActivity(intent) //inicia la otra actividad
-
-        //finish() //finaliza esta actividad
-    }
 
     private fun navigateToRFIDActivity() {
 
@@ -57,8 +50,34 @@ class DashboardActivity(
         //finish() //finaliza esta actividad
     }
 
+    private fun navigateToABM() {
+
+        val intent = Intent(this, SeleccionABMActivity::class.java)
+
+        startActivity(intent) //inicia la otra actividad
+
+        //finish() //finaliza esta actividad
+    }
+
+    private fun navigateToControl() {
+
+        val intent = Intent(this, SeleccionControlActivity::class.java)
+
+        startActivity(intent) //inicia la otra actividad
+
+        //finish() //finaliza esta actividad
+    }
+
     private fun logOut() {
         tokenManager.clearToken()
+        tokenManager.clearAll()
+
+        val username = tokenManager.obtenerNombreUsuario()
+        val token = tokenManager.getToken()
+
+        Log.d("BORRADO DE SHARED", "username ${username}")
+        Log.d("BORRADO DE SHARED", "token ${token}")
+
         if (tokenManager.getToken() == "" || tokenManager.getToken() == null) {
 
             val intent = Intent(this, LoginActivity::class.java)

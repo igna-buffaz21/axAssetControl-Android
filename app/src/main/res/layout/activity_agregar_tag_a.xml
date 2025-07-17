@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    >
+
+    <!-- Header reutilizable -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/layout_header" />
+
+    <!-- Contenido principal -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Título -->
+        <TextView
+            android:id="@+id/tv_table_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Añadir Tag Activo"
+            android:textSize="24sp"
+            android:textStyle="normal"
+            android:textColor="#2C2C2C"
+            android:layout_marginBottom="12dp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.05"
+            android:gravity="center"
+            android:textAlignment="center" />
+
+        <!-- Área del botón RFID -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/filter_background">
+
+            <!-- Botón Leer Tag RFID -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_leer_tag_subsector"
+                android:layout_width="240dp"
+                android:layout_height="56dp"
+                android:text="Leer Tag Subsector"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#000000"
+                app:cornerRadius="12dp"
+                app:elevation="4dp"
+                app:rippleColor="#FFFFFF" />
+
+        </LinearLayout>
+
+        <!-- Tabla (contenido principal) -->
+        <include
+            android:id="@+id/table_component"
+            layout="@layout/layout_tabla"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Loading indicator -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>

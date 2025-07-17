@@ -1,7 +1,7 @@
 package aumax.estandar.axappestandar.readers.Chainway
 
 import android.util.Log
-import aumax.estandar.axappestandar.interfaces.ITagLeidoListener
+import aumax.estandar.axappestandar.utils.interfaces.ITagLeidoListener
 import aumax.estandar.axappestandar.readers.Configuracion
 import aumax.estandar.axappestandar.utils.TagRFID
 import com.rscja.deviceapi.RFIDWithUHFUART

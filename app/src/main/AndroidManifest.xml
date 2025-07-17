@@ -32,8 +32,38 @@
         </activity>
 
         <activity
-            android:name=".activitys.ShowUsersActivity"
-            android:exported="false">
+            android:name=".activitys.SeleccionABMActivity"
+            android:exported="false"
+            android:label="SeleccionABM"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".activitys.AgregarTagSSActivity"
+            android:exported="false"
+            android:label="AgregarTagSS"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".activitys.SeleccionControlActivity"
+            android:exported="false"
+            android:label="SeleccionControl"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".activitys.DescargarSSActivity"
+            android:exported="false"
+            android:label="DescargarSSA"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".activitys.AgregarTagAActivity"
+            android:exported="false"
+            android:label="AgregarTagA"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
         </activity>
 
         <activity

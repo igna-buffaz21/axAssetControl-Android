@@ -2,8 +2,8 @@ package aumax.estandar.axappestandar.readers
 
 import android.content.Context
 import android.util.Log
-import aumax.estandar.axappestandar.interfaces.ICodigoLeido
-import aumax.estandar.axappestandar.interfaces.ITagLeidoListener
+import aumax.estandar.axappestandar.utils.interfaces.ICodigoLeido
+import aumax.estandar.axappestandar.utils.interfaces.ITagLeidoListener
 import aumax.estandar.axappestandar.readers.Chainway.ChainwaySDK
 import aumax.estandar.axappestandar.readers.Linkwin.LinkWinSDK
 import aumax.estandar.axappestandar.readers.Linkwin.LinkWinScanUtils

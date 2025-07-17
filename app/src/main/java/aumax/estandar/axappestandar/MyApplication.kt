@@ -1,20 +1,36 @@
 package aumax.estandar.axappestandar
 
 import android.app.Application
-import aumax.estandar.axappestandar.Data.TokenManager
-import aumax.estandar.axappestandar.Repository.Retrofit.ApiService
-import aumax.estandar.axappestandar.Repository.Retrofit.RetrofitClient
+import aumax.estandar.axappestandar.data.local.TokenManager
+import aumax.estandar.axappestandar.data.remote.api.ActivoApiService
+import aumax.estandar.axappestandar.data.remote.api.LocacionApiService
+import aumax.estandar.axappestandar.data.remote.api.UserApiService
+import aumax.estandar.axappestandar.data.remote.api.RetrofitClient
+import aumax.estandar.axappestandar.data.remote.api.SectorApiService
+import aumax.estandar.axappestandar.data.remote.api.SubSectorApiService
 
 class MyApplication : Application() {
     companion object {
         lateinit var tokenManager: TokenManager
-        lateinit var apiService: ApiService
+        lateinit var userApiService: UserApiService
+        lateinit var subSectorApiService: SubSectorApiService
+        lateinit var sectorApiService: SectorApiService
+        lateinit var locacionApiService: LocacionApiService
+        lateinit var activoApiService: ActivoApiService
     }
 
     override fun onCreate() {
         super.onCreate()
 
         tokenManager = TokenManager(this)
-        apiService = RetrofitClient.create(tokenManager)
+
+        val retrofit = RetrofitClient.create(tokenManager)
+
+        userApiService = retrofit.create(UserApiService::class.java)
+        subSectorApiService = retrofit.create(SubSectorApiService::class.java)
+        sectorApiService = retrofit.create(SectorApiService::class.java)
+        locacionApiService = retrofit.create(LocacionApiService::class.java)
+        activoApiService = retrofit.create(ActivoApiService::class.java)
+
     }
 }
