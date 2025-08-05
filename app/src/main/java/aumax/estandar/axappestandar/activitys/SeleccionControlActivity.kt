@@ -14,7 +14,6 @@ class SeleccionControlActivity(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivitySeleccionControlBinding.inflate(layoutInflater) ///crea objetos del XML
         setContentView(binding.root)
 
@@ -25,6 +24,12 @@ class SeleccionControlActivity(
     private fun setupListeners() {
         binding.descargarSs.setOnClickListener {
             navigateToDescargarSS()
+        }
+        binding.verSsDescargados.setOnClickListener {
+            navigateToVerSS()
+        }
+        binding.controlOn.setOnClickListener {
+            navigateToControlOn()
         }
     }
 
@@ -41,6 +46,22 @@ class SeleccionControlActivity(
 
     private fun navigateToDescargarSS() {
         val intent = Intent(this, DescargarSSActivity::class.java)
+
+        startActivity(intent) //inicia la otra actividad
+
+        //finish() //finaliza esta actividad
+    }
+
+    private fun navigateToVerSS() {
+        val intent = Intent(this, VerSSDActivity::class.java)
+
+        startActivity(intent) //inicia la otra actividad
+
+        //finish() //finaliza esta actividad
+    }
+
+    private fun navigateToControlOn() {
+        val intent = Intent(this, ControlOnlineActivity::class.java)
 
         startActivity(intent) //inicia la otra actividad
 

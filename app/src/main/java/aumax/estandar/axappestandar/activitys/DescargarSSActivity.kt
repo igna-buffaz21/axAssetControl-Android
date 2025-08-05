@@ -13,12 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import aumax.estandar.axappestandar.MyApplication
+import aumax.estandar.axappestandar.data.local.entities.Active
+import aumax.estandar.axappestandar.data.models.Activos.Activo
 import aumax.estandar.axappestandar.data.models.Locacion.Locacion
 import aumax.estandar.axappestandar.data.models.Sector.Sector
 import aumax.estandar.axappestandar.data.models.SubSector.SubSector
-import aumax.estandar.axappestandar.databinding.ActivityAgregarTagSsBinding
+import aumax.estandar.axappestandar.data.toEntity
 import aumax.estandar.axappestandar.databinding.ActivityDescargarSubsectoresBinding
-import aumax.estandar.axappestandar.databinding.ItemTablaBinding
+import aumax.estandar.axappestandar.repository.ActivoRepository
 import aumax.estandar.axappestandar.repository.LocacionRepository
 import aumax.estandar.axappestandar.repository.SectorRepository
 import aumax.estandar.axappestandar.repository.SubSectorRepository
@@ -34,10 +36,12 @@ class DescargarSSActivity(
     private lateinit var subsectorRepository: SubSectorRepository
     private lateinit var locacionesRepository: LocacionRepository
     private lateinit var sectorRepository: SectorRepository
+    private lateinit var activoRepository: ActivoRepository
 
     private var locacionesList: List<Locacion> = emptyList()
     private var sectorList: List<Sector> = emptyList()
     private var subSectorList: List<SubSector> = emptyList()
+    private var activoList: List<Activo> = emptyList()
     private var idEmpresa: Int = 0
 
     private lateinit var adapter: SubSectorAdapter
@@ -50,7 +54,8 @@ class DescargarSSActivity(
 
         subsectorRepository = SubSectorRepository( //reutilizamos las instacias creadas al inicio de la aplicacion
             MyApplication.tokenManager,
-            MyApplication.subSectorApiService
+            MyApplication.subSectorApiService,
+            context = this
         )
 
         locacionesRepository = LocacionRepository(
@@ -63,6 +68,12 @@ class DescargarSSActivity(
             MyApplication.sectorApiService
         )
 
+        activoRepository = ActivoRepository(
+            MyApplication.tokenManager,
+            MyApplication.activoApiService,
+            this
+        )
+
         setupTableComponent()
         idEmpresa = MyApplication.tokenManager.getCompanyId()!!
 
@@ -72,8 +83,6 @@ class DescargarSSActivity(
         else {
             Toast.makeText(this@DescargarSSActivity, "Error Inesperado, reinicie la aplicacion", Toast.LENGTH_SHORT).show()
         }
-
-        setupListeners()
     }
 
     private fun setupTableComponent() {
@@ -106,17 +115,24 @@ class DescargarSSActivity(
         adapter = SubSectorAdapter()
 
         adapter.onAddClick = { subSector ->
+            Log.d("INFORMACION DEL SUBSECTOR", "info: ${subSector}")
 
+            lifecycleScope.launch {
+                val activos = obtenerActivos(subSector.id, subSector.idEmpresa, true) ?: emptyList()
 
+                val activoDB = activos.map { it.toEntity() }
+                val subSectorDB = subSector.toEntity()
 
+                Log.d("INFO ANTES DE CONSULTA", "info SS: ${subSectorDB}")
+                Log.d("INFO ANTES DE CONSULTA", "info ACT: ${activoDB}")
+
+                descargarSubsectorYActivo(subSectorDB, activoDB)
+            }
         }
+
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
-    }
-
-    private fun setupListeners() {
-        binding
     }
 
     private fun setupDataOnTable() {
@@ -243,4 +259,23 @@ class DescargarSSActivity(
                 }
         }
     }
+
+    private suspend fun obtenerActivos(idSubSector: Int, idEmpresa: Int, status: Boolean): List<Activo>? {
+        return activoRepository.obtenerActivos(idSubSector, idEmpresa, status)
+    }
+
+    private fun descargarSubsectorYActivo(subSector: aumax.estandar.axappestandar.data.local.entities.SubSector, activos: List<Active>) {
+        lifecycleScope.launch {
+            val response = subsectorRepository.insertarSubSectorYActivos(subSector, activos)
+            response
+                .onSuccess { exito ->
+                    Toast.makeText(this@DescargarSSActivity, "${exito}", Toast.LENGTH_SHORT).show()
+                }
+                .onFailure { error ->
+                    Toast.makeText(this@DescargarSSActivity, "Error al Descargar los activos", Toast.LENGTH_SHORT).show()
+                    Log.d("ERROR AL OBTENER ACTIVOS", "${error}")
+                }
+        }
+    }
+
 }

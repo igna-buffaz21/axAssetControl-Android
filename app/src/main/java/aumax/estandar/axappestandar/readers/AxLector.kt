@@ -66,6 +66,10 @@ class AxLector(private val context: Context, private val modoLectura : Int) {
         }
     }
 
+    fun LimpiarChainway() {
+        chainwaySDK.dispose()
+    }
+
     private fun IniciarRFIDChainway(){
         chainwaySDK = ChainwaySDK
         chainwaySDK.Iniciar()

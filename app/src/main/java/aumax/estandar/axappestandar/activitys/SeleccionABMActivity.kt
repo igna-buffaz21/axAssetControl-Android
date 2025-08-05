@@ -10,14 +10,12 @@ class SeleccionABMActivity(
 
 ) : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySeleccionAbmBinding //lateinit indica que se inicializa despues
+    private lateinit var binding: ActivitySeleccionAbmBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivitySeleccionAbmBinding.inflate(layoutInflater) ///crea objetos del XML
+        binding = ActivitySeleccionAbmBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         setupListeners()
         setupTableComponent()

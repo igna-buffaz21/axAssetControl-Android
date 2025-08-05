@@ -3,6 +3,7 @@ package aumax.estandar.axappestandar.activitys
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
@@ -19,15 +20,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityLoginBinding.inflate(layoutInflater) ///crea objetos del XML
         setContentView(binding.root)
 
-        authRepository = AuthRepository( //reutilizamos las instacias creadas al inicio de la aplicacion
-            MyApplication.userApiService,
-            MyApplication.tokenManager
-        )
-
+        setupRepository()
         setupListeners() //escuchan acciones del usuario
     }
 
@@ -41,6 +37,13 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupRepository() {
+        authRepository = AuthRepository( //reutilizamos las instacias creadas al inicio de la aplicacion
+            MyApplication.userApiService,
+            MyApplication.tokenManager
+        )
+    }
+
     private fun iniciarSesion(usuario: String, password: String) {
         showLoaging(true)
         lifecycleScope.launch {
@@ -52,6 +55,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 else {
                     showLoaging(false)
+                    Log.d("ERROR AL INICIAR SESION", "${response}")
                     Toast.makeText(this@LoginActivity, "Error al iniciar sesion", Toast.LENGTH_SHORT).show()
                 }
             }

@@ -31,70 +31,94 @@
                 android:paddingHorizontal="16dp"
                 android:elevation="2dp" />
 
-            <!-- Contenedor de la tabla con scroll -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_table"
+            <!-- Contenedor principal para el contenido de la tabla -->
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:scrollbars="vertical"
-                android:scrollbarStyle="outsideOverlay"
-                android:scrollbarThumbVertical="@drawable/scrollbar_thumb"
-                android:scrollbarTrackVertical="@drawable/scrollbar_track"
-                android:fadeScrollbars="false"
-                android:background="#FFFFFF" />
+                android:background="#FFFFFF">
 
-            <!-- Mensaje cuando no hay datos -->
-            <LinearLayout
-                android:id="@+id/empty_state"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:visibility="gone"
-                android:background="#FFFFFF"
-                android:padding="32dp">
+                <!-- Contenedor de la tabla con scroll -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_table"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical"
+                    android:scrollbarStyle="outsideOverlay"
+                    android:scrollbarThumbVertical="@drawable/scrollbar_thumb"
+                    android:scrollbarTrackVertical="@drawable/scrollbar_track"
+                    android:fadeScrollbars="false"
+                    android:background="#FFFFFF" />
 
-                <!-- Icono para empty state -->
-                <View
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/empty_state_icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No hay datos disponibles"
-                    android:textSize="18sp"
-                    android:textColor="#2C2C2C"
-                    android:textStyle="normal"
-                    android:fontFamily="sans-serif-light"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Intenta ajustar los filtros para ver resultados"
-                    android:textSize="14sp"
-                    android:textColor="#757575"
-                    android:fontFamily="sans-serif-light"
+                <!-- Mensaje cuando no hay datos - CENTRADO PERFECTO -->
+                <LinearLayout
+                    android:id="@+id/empty_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
                     android:gravity="center"
-                    android:textAlignment="center" />
+                    android:visibility="gone"
+                    android:background="#FFFFFF"
+                    android:padding="32dp">
 
-            </LinearLayout>
+                    <!-- Icono para empty state -->
+                    <View
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/empty_state_icon" />
 
-            <!-- Loading indicator -->
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                android:layout_margin="32dp"
-                android:indeterminateTint="#000000" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No hay datos disponibles"
+                        android:textSize="20sp"
+                        android:textColor="#2C2C2C"
+                        android:textStyle="normal"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center"
+                        android:textAlignment="center" />
+
+                </LinearLayout>
+
+                <!-- Loading indicator - TAMBIÉN CENTRADO PERFECTO -->
+                <FrameLayout
+                    android:id="@+id/loading_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:background="#FFFFFF"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <ProgressBar
+                            android:id="@+id/progress_bar"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:indeterminateTint="#000000"
+                            android:layout_marginBottom="16dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cargando datos..."
+                            android:textSize="16sp"
+                            android:textColor="#757575"
+                            android:fontFamily="sans-serif-light" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+            </FrameLayout>
 
         </LinearLayout>
 

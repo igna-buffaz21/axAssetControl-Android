@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/item_activo_background"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <!-- Header del item (Nombre y código) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <!-- Nombre del activo -->
+        <TextView
+            android:id="@+id/tv_activo_nombre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nombre del Activo"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:textColor="#2C2C2C"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.02"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <!-- Código del activo -->
+        <TextView
+            android:id="@+id/tv_activo_codigo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ACT001"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:background="@drawable/codigo_background"
+            android:padding="6dp"
+            android:fontFamily="sans-serif"
+            android:layout_marginStart="12dp" />
+
+    </LinearLayout>
+
+    <!-- Información adicional (Marca y Versión) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="visible">
+
+        <!-- Marca del activo -->
+        <LinearLayout
+            android:id="@+id/layout_marca"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Marca: "
+                android:textSize="12sp"
+                android:textColor="#999999"
+                android:fontFamily="sans-serif"
+                android:letterSpacing="0.02" />
+
+            <TextView
+                android:id="@+id/tv_activo_marca"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Samsung"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.02"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

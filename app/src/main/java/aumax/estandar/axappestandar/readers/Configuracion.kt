@@ -2,7 +2,7 @@ package aumax.estandar.axappestandar.readers
 
 object Configuracion {
 
-    var potenciaRFID = 10
+    var potenciaRFID = 5
     var tiempoLecturaMs = 1000
     var tipoHandheld = 1
 

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import aumax.estandar.axappestandar.R
 import aumax.estandar.axappestandar.data.models.SubSector.SubSector
 import aumax.estandar.axappestandar.databinding.ItemTablaBinding
 
@@ -12,6 +13,7 @@ class SubSectorAdapter :
     ListAdapter<SubSector,SubSectorAdapter.ViewHolder>(DiffCallback()) { //SubSector (tipo de dato para mostrar), SubSectorAdapter.ViewHolder (es el tipo de ViewHolder que vas a usar para mostrar cada ítem), DiffCallback() (es la lógica para comparar si los ítems cambiaron.)
 
     var onAddClick: ((SubSector) -> Unit)? = null
+    private var leerTag: Boolean = false
 
     class ViewHolder(val binding: ItemTablaBinding) : //item dentro de la tabla
         RecyclerView.ViewHolder(binding.root)
@@ -28,7 +30,22 @@ class SubSectorAdapter :
             tvTag.text = subSector.tagRfid
             //tvStatus.text = if (subSector.status) "Activo" else "Inactivo"
             btnAdd.setOnClickListener {
-                onAddClick?.invoke(subSector)
+                if (!leerTag) {
+                    leerTag = true
+
+                    holder.binding.btnAdd.setImageResource(
+                        R.drawable.ic_reader
+                    )
+
+                    onAddClick?.invoke(subSector)
+                }
+                else {
+                    leerTag = false
+
+                    holder.binding.btnAdd.setImageResource(
+                        R.drawable.ic_add
+                    )
+                }
             }
 
         }

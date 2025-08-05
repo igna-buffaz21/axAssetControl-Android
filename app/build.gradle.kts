@@ -1,12 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    //id("kotlin-kapt")
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13"
 }
 
 android {
     namespace = "aumax.estandar.axappestandar"
-    compileSdk = 34
+    compileSdk = 34  // Volvemos a 34 temporalmente
 
     defaultConfig {
         applicationId = "aumax.estandar.axappestandar"
@@ -35,7 +35,7 @@ android {
         jvmTarget = "11"
     }
 
-    // Habilitar Data Binding
+    // Habilitar Data Binding y View Binding
     buildFeatures {
         dataBinding = true
         viewBinding = true
@@ -67,12 +67,11 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
 
-    // Room - VERSIONES CONSISTENTES
-    /*val roomVersion = "2.6.1"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
+    // Room - EXACTAMENTE COMO EN EL PROYECTO FUNCIONAL
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.4.3")  // ✅ Mantener esta versión como en el proyecto funcional
+    ksp("androidx.room:room-compiler:2.6.1")
 
-    // Lifecycle ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")*/
+    // Lifecycle ViewModels - Para Views tradicionales
+    //implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
 }

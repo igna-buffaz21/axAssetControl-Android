@@ -4,6 +4,7 @@ import android.app.Application
 import aumax.estandar.axappestandar.data.local.TokenManager
 import aumax.estandar.axappestandar.data.remote.api.ActivoApiService
 import aumax.estandar.axappestandar.data.remote.api.LocacionApiService
+import aumax.estandar.axappestandar.data.remote.api.RegistroControlApiService
 import aumax.estandar.axappestandar.data.remote.api.UserApiService
 import aumax.estandar.axappestandar.data.remote.api.RetrofitClient
 import aumax.estandar.axappestandar.data.remote.api.SectorApiService
@@ -17,6 +18,7 @@ class MyApplication : Application() {
         lateinit var sectorApiService: SectorApiService
         lateinit var locacionApiService: LocacionApiService
         lateinit var activoApiService: ActivoApiService
+        lateinit var registroControlApiService: RegistroControlApiService
     }
 
     override fun onCreate() {
@@ -31,6 +33,7 @@ class MyApplication : Application() {
         sectorApiService = retrofit.create(SectorApiService::class.java)
         locacionApiService = retrofit.create(LocacionApiService::class.java)
         activoApiService = retrofit.create(ActivoApiService::class.java)
+        registroControlApiService = retrofit.create(RegistroControlApiService::class.java)
 
     }
 }

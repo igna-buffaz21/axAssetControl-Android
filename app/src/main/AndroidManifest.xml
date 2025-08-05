@@ -53,6 +53,20 @@
         </activity>
 
         <activity
+            android:name=".activitys.ControlOnlineActivity"
+            android:exported="false"
+            android:label="ControlOnline"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".activitys.VerSSDActivity"
+            android:exported="false"
+            android:label="VerSSD"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        </activity>
+
+        <activity
             android:name=".activitys.DescargarSSActivity"
             android:exported="false"
             android:label="DescargarSSA"

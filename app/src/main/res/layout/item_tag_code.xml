@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/tag_code_item_background"
+    android:padding="12dp"
+    android:layout_marginBottom="8dp"
+    android:gravity="center_vertical">
+
+    <!-- Icono del tag -->
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_nfc"
+        app:tint="#4CAF50"
+        android:layout_marginEnd="12dp"
+        android:contentDescription="Tag RFID" />
+
+    <!-- Código del tag -->
+    <TextView
+        android:id="@+id/tv_tag_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="RFID123456789"
+        android:textSize="14sp"
+        android:textColor="#2C2C2C"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.02" />
+
+    <!-- Botón eliminar -->
+    <ImageButton
+        android:id="@+id/btn_remove_code"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/remove_code_button_background"
+        android:src="@drawable/ic_close"
+        android:contentDescription="Eliminar código"
+        android:scaleType="centerInside"
+        app:tint="#FF6B6B" />
+
+</LinearLayout>

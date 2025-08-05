@@ -26,28 +26,18 @@ class DashboardActivity(
     }
 
     private fun setupListeners() {
-        binding.btnHome.setOnClickListener {
-            navigateToRFIDActivity()
-        }
         binding.btnAbm.setOnClickListener {
             navigateToABM()
         }
         binding.btnControl.setOnClickListener {
             navigateToControl()
         }
+        binding.btnReasignarActivo.setOnClickListener {
+            navigateToReasign()
+        }
         binding.btnLogout.setOnClickListener {
             logOut()
         }
-    }
-
-
-    private fun navigateToRFIDActivity() {
-
-        val intent = Intent(this, LecturaRFIDActivity::class.java)
-
-        startActivity(intent) //inicia la otra actividad
-
-        //finish() //finaliza esta actividad
     }
 
     private fun navigateToABM() {
@@ -66,6 +56,10 @@ class DashboardActivity(
         startActivity(intent) //inicia la otra actividad
 
         //finish() //finaliza esta actividad
+    }
+
+    private fun navigateToReasign() {
+
     }
 
     private fun logOut() {

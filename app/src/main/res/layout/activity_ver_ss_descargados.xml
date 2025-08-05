@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Header reutilizable -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/layout_header" />
+
+    <!-- Contenido principal -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Título -->
+        <TextView
+            android:id="@+id/tv_table_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Subsectores Descargados"
+            android:textSize="24sp"
+            android:textStyle="normal"
+            android:textColor="#2C2C2C"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.05"
+            android:gravity="center"
+            android:textAlignment="center" />
+
+        <!-- Tabla (contenido principal) -->
+        <include
+            android:id="@+id/table_component"
+            layout="@layout/layout_tabla"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Loading indicator -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
+
+        <!-- Mensaje cuando no hay datos -->
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No hay subsectores descargados"
+            android:textSize="16sp"
+            android:textColor="#666666"
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>

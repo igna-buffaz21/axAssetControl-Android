@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/modal_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CC000000"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Contenedor principal del modal -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/modal_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="24dp"
+        app:cardBackgroundColor="#FFFFFF">
+
+        <LinearLayout
+            android:id="@+id/modal_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header del modal -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:orientation="horizontal"
+                android:padding="24dp"
+                android:gravity="center_vertical">
+
+                <!-- Título del modal -->
+                <TextView
+                    android:id="@+id/tv_modal_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Activos del Subsector"
+                    android:textSize="22sp"
+                    android:textStyle="normal"
+                    android:textColor="#2C2C2C"
+                    android:fontFamily="sans-serif-light"
+                    android:letterSpacing="0.05"
+                    android:gravity="start" />
+
+                <!-- Botón cerrar -->
+                <ImageButton
+                    android:id="@+id/btn_close_modal"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/close_button_background"
+                    android:src="@drawable/ic_close"
+                    android:contentDescription="Cerrar modal"
+                    android:scaleType="centerInside"
+                    app:tint="#666666" />
+
+            </LinearLayout>
+
+            <!-- Línea separadora sutil -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F0F0F0"
+                android:layout_marginHorizontal="16dp" />
+
+            <!-- Contenido del modal -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:minHeight="320dp"
+                android:maxHeight="450dp">
+
+                <!-- Contenedor para la lista con fondo sutil -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#FAFAFA"
+                    android:layout_marginBottom="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <!-- Lista de activos -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_activos"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="vertical"
+                            android:scrollbarStyle="outsideOverlay"
+                            android:clipToPadding="false"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Loading indicator para activos -->
+                <ProgressBar
+                    android:id="@+id/progress_bar_activos"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="32dp"
+                    android:indeterminateTint="#2C2C2C"
+                    android:visibility="gone" />
+
+                <!-- Mensaje cuando no hay activos -->
+                <LinearLayout
+                    android:id="@+id/empty_state_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginTop="40dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_no_activos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No hay activos disponibles"
+                        android:textSize="16sp"
+                        android:textColor="#999999"
+                        android:gravity="center"
+                        android:fontFamily="sans-serif"
+                        android:letterSpacing="0.02" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Los activos aparecerán aquí cuando estén disponibles"
+                        android:textSize="14sp"
+                        android:textColor="#CCCCCC"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="sans-serif" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Footer del modal (opcional para botones adicionales) -->
+            <LinearLayout
+                android:id="@+id/modal_footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:gravity="end"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btn_modal_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Acción"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:background="@drawable/primary_button_background"
+                    android:paddingHorizontal="24dp"
+                    android:letterSpacing="0.02"
+                    android:layout_marginStart="12dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

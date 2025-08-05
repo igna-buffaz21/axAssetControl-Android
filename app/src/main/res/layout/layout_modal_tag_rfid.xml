@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/modal_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CC000000"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Contenedor principal del modal -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/modal_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="24dp"
+        app:cardBackgroundColor="#FFFFFF">
+
+        <LinearLayout
+            android:id="@+id/modal_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header del modal -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:orientation="horizontal"
+                android:padding="24dp"
+                android:gravity="center_vertical">
+
+                <!-- Título del modal -->
+                <TextView
+                    android:id="@+id/tv_modal_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Asignar Tag RFID"
+                    android:textSize="22sp"
+                    android:textStyle="normal"
+                    android:textColor="#2C2C2C"
+                    android:fontFamily="sans-serif-light"
+                    android:letterSpacing="0.05"
+                    android:gravity="start" />
+
+                <!-- Botón cerrar -->
+                <ImageButton
+                    android:id="@+id/btn_close_modal"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/close_button_background"
+                    android:src="@drawable/ic_close"
+                    android:contentDescription="Cerrar modal"
+                    android:scaleType="centerInside"
+                    app:tint="#666666" />
+
+            </LinearLayout>
+
+            <!-- Línea separadora sutil -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F0F0F0"
+                android:layout_marginHorizontal="16dp" />
+
+            <!-- Contenido del modal -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Información del activo -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#FAFAFA"
+                    android:layout_marginBottom="24dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/layout_activo_info"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Activo seleccionado"
+                            android:textSize="12sp"
+                            android:textColor="#999999"
+                            android:fontFamily="sans-serif"
+                            android:letterSpacing="0.02"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/tv_activo_nombre"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Nombre del activo"
+                            android:textSize="16sp"
+                            android:textColor="#2C2C2C"
+                            android:fontFamily="sans-serif-light"
+                            android:letterSpacing="0.02"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/tv_activo_codigo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Código: ACT001"
+                            android:textSize="14sp"
+                            android:textColor="#666666"
+                            android:fontFamily="sans-serif" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Apartado para códigos del tag -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="32dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/codigo_del_tag"
+                        android:text="Códigos del Tag"
+                        android:textSize="16sp"
+                        android:textColor="#2C2C2C"
+                        android:fontFamily="sans-serif-light"
+                        android:letterSpacing="0.02"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Contenedor de códigos con scroll -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="1dp"
+                        app:cardBackgroundColor="#F8F8F8"
+                        android:minHeight="80dp">
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxHeight="120dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+
+                                <!-- Lista de códigos leídos -->
+                                <LinearLayout
+                                    android:id="@+id/layout_tag_codes"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:visibility="gone">
+
+                                    <!-- Los códigos se añadirán dinámicamente aquí -->
+
+                                </LinearLayout>
+
+                                <!-- Estado cuando no hay códigos -->
+                                <TextView
+                                    android:id="@+id/tv_no_codes"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="No hay códigos leídos"
+                                    android:textSize="14sp"
+                                    android:textColor="#CCCCCC"
+                                    android:gravity="center"
+                                    android:fontFamily="sans-serif"
+                                    android:padding="16dp" />
+
+                            </LinearLayout>
+
+                        </ScrollView>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <!-- Botones de acción -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end">
+
+                    <!-- Botón cancelar -->
+                    <Button
+                        android:id="@+id/btn_cancelar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:text="Cancelar"
+                        android:textColor="#666666"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:background="@drawable/cancel_button_background"
+                        android:paddingHorizontal="24dp"
+                        android:letterSpacing="0.02"
+                        android:layout_marginEnd="12dp" />
+
+                    <!-- Botón confirmar -->
+                    <Button
+                        android:id="@+id/btn_confirmar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:text="Confirmar"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:background="@drawable/primary_button_background"
+                        android:paddingHorizontal="24dp"
+                        android:letterSpacing="0.02"
+                        android:enabled="false" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

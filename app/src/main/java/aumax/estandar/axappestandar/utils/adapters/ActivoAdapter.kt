@@ -2,14 +2,21 @@ package aumax.estandar.axappestandar.utils.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import aumax.estandar.axappestandar.R
+import aumax.estandar.axappestandar.data.local.entities.Active
 import aumax.estandar.axappestandar.data.models.Activos.Activo
+import aumax.estandar.axappestandar.data.models.SubSector.SubSector
 import aumax.estandar.axappestandar.databinding.ItemTablaBinding
 
 class ActivoAdapter :
     ListAdapter<Activo, ActivoAdapter.ViewHolder>(DiffCallback()) { //SubSector (tipo de dato para mostrar), SubSectorAdapter.ViewHolder (es el tipo de ViewHolder que vas a usar para mostrar cada ítem), DiffCallback() (es la lógica para comparar si los ítems cambiaron.)
+
+    var onAddClick: ((Activo) -> Unit)? = null
+    private var lecturaIniciada: Boolean = false
 
     class ViewHolder(val binding: ItemTablaBinding) : //item dentro de la tabla
         RecyclerView.ViewHolder(binding.root)
@@ -25,6 +32,28 @@ class ActivoAdapter :
             tvName.text = activo.name
             tvTag.text = activo.tagRfid
             //tvStatus.text = if (subSector.status) "Activo" else "Inactivo"
+
+            btnAdd.setOnClickListener {
+
+                if (!lecturaIniciada) {
+                    lecturaIniciada = true
+
+                    holder.binding.btnAdd.setImageResource(
+                        R.drawable.ic_reader
+                    )
+
+                    onAddClick?.invoke(activo)
+                }
+                else {
+                    lecturaIniciada = false
+
+                    holder.binding.btnAdd.setImageResource(
+                        R.drawable.ic_add
+                    )
+
+                }
+
+            }
         }
     }
 
