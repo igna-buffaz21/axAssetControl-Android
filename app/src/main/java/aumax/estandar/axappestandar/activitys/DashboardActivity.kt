@@ -26,6 +26,7 @@ class DashboardActivity(
     }
 
     private fun setupListeners() {
+
         binding.btnAbm.setOnClickListener {
             navigateToABM()
         }
@@ -59,7 +60,11 @@ class DashboardActivity(
     }
 
     private fun navigateToReasign() {
+        val intent = Intent(this, ReasignarActivoActivity::class.java)
 
+        startActivity(intent) //inicia la otra actividad
+
+        //finish() //finaliza esta actividad
     }
 
     private fun logOut() {

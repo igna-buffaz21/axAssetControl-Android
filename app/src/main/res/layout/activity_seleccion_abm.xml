@@ -78,6 +78,22 @@
                     android:textColor="#FFFFFF"
                     android:backgroundTint="#000000"
                     app:cornerRadius="12dp"
+                    android:layout_marginBottom="16dp"
+                    app:elevation="4dp"
+                    app:rippleColor="#FFFFFF" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reasignar_activo"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Reasginar Tag Activo"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#000000"
+                    app:cornerRadius="12dp"
+
                     app:elevation="4dp"
                     app:rippleColor="#FFFFFF" />
 

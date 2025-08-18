@@ -51,6 +51,8 @@ class AgregarTagSSActivity(
     private var locacionesList: List<Locacion> = emptyList()
     private var sectorList: List<Sector> = emptyList()
     private var subSectorList: List<SubSector> = emptyList()
+
+
     private var idEmpresa: Int = 0
 
     //RFID
@@ -281,6 +283,7 @@ class AgregarTagSSActivity(
                     if (listTagsLeidosA.size > 1) {
                         leerTag = false
                         listTagsLeidosA.clear()
+                        adapter.deactivateActiveItem()
 
                         runOnUiThread {
                             Toast.makeText(this@AgregarTagSSActivity, "Se detectaron múltiples tags, intenta nuevamente.", Toast.LENGTH_LONG).show()
@@ -293,19 +296,21 @@ class AgregarTagSSActivity(
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         if (listTagsLeidosA.size == 1 && leerTag) {
-                            guardarTag(subSectorAsignar, listTagsLeidosA[0].EPC)
+                            guardarTag(subSectorAsignar, listTagsLeidosA[0].TID)
 
                             leerTag = false
                             listTagsLeidosA.clear()
+                            adapter.deactivateActiveItem()
                         }
                         else {
                             leerTag = false
                             listTagsLeidosA.clear()
+                            adapter.deactivateActiveItem()
 
                             Log.d("PRUEBA LECTOR", "Se canceló porque se detectaron múltiples tags desde 2")
 
                         }
-                    }, 500) // Espera 500ms para ver si se suma otro tag
+                    }, 500)
 
                 }
             }
@@ -321,7 +326,6 @@ class AgregarTagSSActivity(
             }
         })
     }
-
 
     private val receiverCB = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -349,12 +353,30 @@ class AgregarTagSSActivity(
     }
 
     private fun setupListeners() {
-        adapter.onAddClick = {subSector ->
+        binding.header.btnBack.setOnClickListener {
+            finish()
+        }
+
+        adapter.onAddClick = { subSector ->
+
+            if (Configuracion.potenciaRFID != 5) {
+                Log.d("CAMBIANDO POTENCIA RFID", "SE ESTA CAMBIANDO LA POTENCIA A 5")
+
+                _oAxLector?.DetenetLecturRFID()
+
+                _oAxLector?.LimpiarChainway()
+
+                Configuracion.potenciaRFID = 5 ///VER
+
+                _oAxLector?.IniciarLecturaRFID()
+
+            }
+
             leerTag = true
 
             subSectorAsignar = subSector
 
-            Toast.makeText(this@AgregarTagSSActivity, "Leyendo Tag para ${subSector.name}", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this@AgregarTagSSActivity, "Leyendo Tag para ${subSector.name}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -500,8 +522,20 @@ class AgregarTagSSActivity(
                     Toast.makeText(this@AgregarTagSSActivity, "Tag asignado con exito", Toast.LENGTH_SHORT).show()
                     listTagsLeidosA.clear()
                     leerTag = false
-                    //obtenerActivos()
+
+                    val positionSS = subSectorList.indexOfFirst { it.id == subSector.id } //buscamos indice del actualizado
+
+                    if (positionSS != -1) {
+                        val updatedSubSector = subSectorList[positionSS].copy(tagRfid = tagRFID) //copia nueva del subsector actualizado
+
+                        val nuevaLista = subSectorList.toMutableList()
+                        nuevaLista[positionSS] = updatedSubSector
+
+                        subSectorList = nuevaLista
+                        adapter.submitList(nuevaLista)
+                    }
                 }
+
                 .onFailure {
                     Toast.makeText(this@AgregarTagSSActivity, "Error al asignar TAG", Toast.LENGTH_SHORT).show()
                     Log.d("PRUEBA LECTOR", "ERROR AL ASIGNAR TAG ${response}")

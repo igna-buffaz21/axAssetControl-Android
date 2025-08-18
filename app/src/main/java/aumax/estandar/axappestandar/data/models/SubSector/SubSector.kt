@@ -4,7 +4,7 @@ data class SubSector(
     val id: Int,
     val idSector: Int,
     val name: String,
-    val tagRfid: String,
+    var tagRfid: String,
     val idEmpresa: Int,
     val version: Int,
     val status: Boolean

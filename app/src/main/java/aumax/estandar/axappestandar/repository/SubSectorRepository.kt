@@ -92,4 +92,24 @@ class SubSectorRepository(
         }
     }
 
+    suspend fun obtenerSectoresPorRfid(tagRfid: String, idEmpresa: Int) : Result<SubSector?> {
+        return try {
+            val response = subSectorApiService.obtenerSubSectorPorRfid(tagRfid, idEmpresa)
+
+            if (response.isSuccessful) {
+                val subsectores = response.body()
+                Log.d("SUBSECTORES", "okey: ${subsectores}")
+                Result.success(subsectores)
+            }
+            else {
+                Log.d("SUBSECTORES", "algo salio mal ${response}")
+                Result.failure(Exception("Error"))
+            }
+        }
+        catch (e: Exception) {
+            Log.d("SUBSECTORES", "algo salio mal catch ${e}")
+            Result.failure(e)
+        }
+    }
+
 }

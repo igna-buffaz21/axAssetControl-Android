@@ -60,32 +60,62 @@
                 android:backgroundTint="#000000"
                 app:cornerRadius="12dp"
                 app:elevation="4dp"
-                app:rippleColor="#FFFFFF" />
+                app:rippleColor="#FFFFFF"
+                android:visibility="visible"/>
 
-            <!-- Botón Iniciar Control (alargado y con ícono) -->
+            <!-- Botón Cancelar Control (reemplaza al de leer tag cuando se inicia el control) -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_iniciar_control"
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:layout_marginStart="8dp"
-                android:text="Iniciar"
-                android:textSize="12sp"
+                android:id="@+id/btn_cancelar_control"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Cancelar Control"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="#000000"
-                app:cornerRadius="24dp"
+                android:backgroundTint="#D32F2F"
+                app:cornerRadius="12dp"
                 app:elevation="4dp"
                 app:rippleColor="#FFFFFF"
-                app:icon="@drawable/ic_play_arrow"
+                app:icon="@drawable/ic_cancel"
                 app:iconGravity="start"
                 app:iconSize="18dp"
                 app:iconPadding="4dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:insetLeft="0dp"
-                android:insetRight="0dp"
-                android:enabled="false"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"/>
+                android:visibility="gone" />
+
+            <!-- FrameLayout para el botón con loading -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp">
+
+                <!-- Botón Iniciar Control -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_iniciar_control"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:text="Iniciar"
+                    android:textSize="12sp"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#000000"
+                    app:cornerRadius="24dp"
+                    app:elevation="4dp"
+                    app:rippleColor="#FFFFFF"
+                    app:icon="@drawable/ic_play_arrow"
+                    app:iconGravity="start"
+                    app:iconSize="18dp"
+                    app:iconPadding="4dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    android:enabled="false"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"/>
+
+            </FrameLayout>
 
         </LinearLayout>
 

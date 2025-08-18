@@ -44,7 +44,6 @@ class ActivosAdapter(
             binding.apply {
                 // Campos principales
                 tvActivoNombre.text = activo.name
-                tvActivoCodigo.text = activo.tag_rfid ?: "N/A"
 
                 // Manejar campo Marca
                 if (!activo.brand.isNullOrBlank()) {

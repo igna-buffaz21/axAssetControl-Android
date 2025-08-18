@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
@@ -22,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import aumax.estandar.axappestandar.MyApplication
 import aumax.estandar.axappestandar.R
 import aumax.estandar.axappestandar.data.models.Activos.Activo
+import aumax.estandar.axappestandar.data.models.RegistroControl.CrearDetalleControlDTO
 import aumax.estandar.axappestandar.databinding.ActivityControlOnlineBinding
 import aumax.estandar.axappestandar.readers.AxLector
 import aumax.estandar.axappestandar.readers.Configuracion
@@ -32,8 +35,11 @@ import aumax.estandar.axappestandar.utils.adapters.ActivoControlAdapter
 import aumax.estandar.axappestandar.utils.interfaces.IOnKeyPressDown
 import aumax.estandar.axappestandar.utils.interfaces.IOnKeyPressUp
 import aumax.estandar.axappestandar.utils.interfaces.ITagLeidoListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import java.time.Instant
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ControlOnlineActivity(
 ) : AppCompatActivity() {
@@ -82,12 +88,21 @@ class ControlOnlineActivity(
                         _oAxLector?.IniciarLecturaRFID() //acción a ejecutar
                     }
                     else {
-                        Toast.makeText(this@ControlOnlineActivity, "Lectura no iniciada, presione Leer Tag Subsector", Toast.LENGTH_SHORT).show()
+                        when {
+                            !leerTagSS && !leerTagsControl -> {
+                                Toast.makeText(this@ControlOnlineActivity, "Lectura no iniciada, Lectores desactivados", Toast.LENGTH_SHORT).show()
+                            }
+                            !leerTagSS -> {
+                                Toast.makeText(this@ControlOnlineActivity, "Lectura no iniciada, Presione en Leer Tag Subsector", Toast.LENGTH_SHORT).show()
+                            }
+                            !leerTagsControl -> {
+                                Toast.makeText(this@ControlOnlineActivity, "Lectura no iniciada, Presione en Iniciar", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 }
             }
         })
-
 
         setListenerKeyPressUp(object : IOnKeyPressUp {
             override fun keyPress(keyCode: Int, event: KeyEvent?) {
@@ -278,7 +293,7 @@ class ControlOnlineActivity(
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         if (listTagsLeidos.size == 1 && leerTagSS) {
-                            obtenerActivos(listTagsLeidos[0].EPC)
+                            obtenerActivos(listTagsLeidos[0].TID)
                             listTagsLeidos.clear()
                             leerTagSS = false
 
@@ -312,7 +327,7 @@ class ControlOnlineActivity(
                     } else {
                         listTagsLeidosControl.add(tagRFID)
 
-                        val epcsLeidos = listTagsLeidosControl.map { it.EPC }.toSet()
+                        val epcsLeidos = listTagsLeidosControl.map { it.TID }.toSet()
 
                         // ✅ Recorremos la lista maestra, sin borrar objetos
                         for (activo in activoList) {
@@ -376,14 +391,23 @@ class ControlOnlineActivity(
             this
         )
         registroControlRepository = RegistroControlRepository(
-            MyApplication.registroControlApiService
+            MyApplication.registroControlApiService,
+            context = this
         )
     }
 
     private fun setupListeners() {
+        binding.header.btnBack.setOnClickListener {
+            finish()
+        }
+
         binding.btnLeerTagSubsector.setOnClickListener {
 
+            binding.btnIniciarControl.isEnabled = false
+            binding.btnIniciarControl.iconTint = ColorStateList.valueOf(Color.GRAY)
+
             if (Configuracion.potenciaRFID != 5) {
+                Log.d("CAMBIANDO POTENCIA RFID", "SE ESTA CAMBIANDO LA POTENCIA A 5")
 
                 _oAxLector?.DetenetLecturRFID()
 
@@ -422,15 +446,15 @@ class ControlOnlineActivity(
         binding.btnIniciarControl.setOnClickListener {
 
             if (Configuracion.potenciaRFID != 30) {
+                Log.d("CAMBIANDO POTENCIA RFID", "SE ESTA CAMBIANDO LA POTENCIA A 30")
 
                 _oAxLector?.DetenetLecturRFID()
 
                 _oAxLector?.LimpiarChainway()
 
-                Configuracion.potenciaRFID = 30 ///VER
+                Configuracion.potenciaRFID = 30
 
                 _oAxLector?.IniciarLecturaRFID()
-
             }
 
             isControlActive = !isControlActive
@@ -438,6 +462,10 @@ class ControlOnlineActivity(
             if (isControlActive) {
                 Toast.makeText(this, "Control Iniciado", Toast.LENGTH_SHORT).show()
                 leerTagsControl = true
+
+                binding.btnLeerTagSubsector.visibility = View.GONE
+                binding.btnCancelarControl.visibility = View.VISIBLE
+
             }
             else {
                 Toast.makeText(this, "Control Finalizado", Toast.LENGTH_SHORT).show()
@@ -446,11 +474,31 @@ class ControlOnlineActivity(
 
                 Log.d("PRUEBA IGUALDADES DE TAGS", "${listTagsLeidosControl}")
 
+                binding.btnLeerTagSubsector.visibility = View.VISIBLE
+                binding.btnCancelarControl.visibility = View.GONE
+
                 if (activoListEncontrados.size > 1) {
                     crearControl()
                 }
             }
             updateButtonUI()
+        }
+        binding.btnCancelarControl.setOnClickListener {
+            Toast.makeText(this, "Control Cancelado", Toast.LENGTH_SHORT).show()
+
+            binding.btnLeerTagSubsector.visibility = View.VISIBLE
+            binding.btnCancelarControl.visibility = View.GONE
+
+            isControlActive = false
+
+            binding.btnIniciarControl.isEnabled = false
+
+
+            prepararProximoControl()
+
+            updateButtonUI()
+
+            setupDataOnTable()
         }
     }
 
@@ -473,15 +521,21 @@ class ControlOnlineActivity(
 
         progressBar.visibility = View.VISIBLE
 
+        // ✅ Fuerza limpieza completa antes de cargar nuevos datos
+        adapter.submitList(null) // Limpia completamente
+
         if (activoList.isNotEmpty()) {
             binding.btnIniciarControl.isEnabled = true
         } else {
             binding.btnIniciarControl.isEnabled = false
         }
 
-        adapter.submitList(activoList)
-        progressBar.visibility = View.GONE
-        emptyState.visibility = if (activoList.isEmpty()) View.VISIBLE else View.GONE
+        // ✅ Carga los nuevos datos en el siguiente frame
+        Handler(Looper.getMainLooper()).post {
+            adapter.submitList(activoList.toList()) // Crea nueva instancia de la lista
+            progressBar.visibility = View.GONE
+            emptyState.visibility = if (activoList.isEmpty()) View.VISIBLE else View.GONE
+        }
     }
 
     private fun obtenerActivos(tagRfid: String) {
@@ -497,6 +551,9 @@ class ControlOnlineActivity(
                     Log.d("ACTIVOS", "SECTORES TRAIDOS ${activoList}")
 
                     setupDataOnTable()
+
+                    binding.btnIniciarControl.isEnabled = true
+                    binding.btnIniciarControl.iconTint = ColorStateList.valueOf(Color.WHITE)
                 }
                 .onFailure { error ->
 
@@ -519,7 +576,7 @@ class ControlOnlineActivity(
 
                     val idControl = id
 
-                    crearDetallesControl(idControl!!)
+                    crearDetallesControlEnCantidad(idControl!!)
                 }
                 .onFailure {
                     Log.d("REGISTRO CONTROL CREADO CON EXITO", "NO se creo ${reponse} ")
@@ -528,22 +585,44 @@ class ControlOnlineActivity(
         }
     }
 
-    private fun crearDetallesControl(idControl: Int) {
+    private fun crearDetallesControlEnCantidad(idControl: Int) {
         lifecycleScope.launch {
-            activoList.forEach { activo ->
-                if (activo.encontrado != "available") {
-                    activo.encontrado = "notAvailable"
-                }
+            // Paso 1: Crear la lista de DTOs
+            val detallesList = activoList.map { activo ->
+                // Normalizamos el status
+                val status = if (activo.encontrado != "available") "notAvailable" else activo.encontrado!!
 
-                val response = registroControlRepository.crearDetalleControl(idControl, activo.id, activo.encontrado!!, 1015)
+                CrearDetalleControlDTO(
+                    idControl = idControl,
+                    idActivo = activo.id,
+                    status = status,
+                    idAuditor = 1015 // o el que corresponda
+                )
+            }
 
-                if (response.isSuccess) {
-                    Log.d("DETALLE CONTROL GUARDADO CON EXITO", "${response} ")
-                }
-                else {
-                    Log.d("DETALLE CONTROL GUARDADO CON EXITO", "ERROR: ${response} ")
-                }
+            val response = registroControlRepository.crearDetalleControlenCantidad(detallesList)
+
+            if (response.isSuccess) {
+                Log.d("DETALLE CONTROL GUARDADO CON EXITO", "${response.getOrNull()}")
+
+                prepararProximoControl()
+                setupDataOnTable()
+
+            } else {
+                Log.e("DETALLE CONTROL GUARDADO CON EXITO", "ERROR: ${response.exceptionOrNull()?.message}")
+
+                prepararProximoControl()
+                setupDataOnTable()
             }
         }
     }
+
+    private fun prepararProximoControl() {
+        leerTagsControl = false
+        listTagsLeidosControl.clear()
+        listTagsLeidos.clear()
+        activoList.clear()
+        idSubsectorControl = 0
+    }
+
 }

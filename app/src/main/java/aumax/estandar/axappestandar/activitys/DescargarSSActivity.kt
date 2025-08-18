@@ -24,6 +24,7 @@ import aumax.estandar.axappestandar.repository.ActivoRepository
 import aumax.estandar.axappestandar.repository.LocacionRepository
 import aumax.estandar.axappestandar.repository.SectorRepository
 import aumax.estandar.axappestandar.repository.SubSectorRepository
+import aumax.estandar.axappestandar.utils.adapters.DescargarSubSectorAdapter
 import aumax.estandar.axappestandar.utils.adapters.SelectLocacionAdapter
 import aumax.estandar.axappestandar.utils.adapters.SubSectorAdapter
 import kotlinx.coroutines.launch
@@ -44,7 +45,7 @@ class DescargarSSActivity(
     private var activoList: List<Activo> = emptyList()
     private var idEmpresa: Int = 0
 
-    private lateinit var adapter: SubSectorAdapter
+    private lateinit var adapter: DescargarSubSectorAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,30 +53,13 @@ class DescargarSSActivity(
         binding = ActivityDescargarSubsectoresBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        subsectorRepository = SubSectorRepository( //reutilizamos las instacias creadas al inicio de la aplicacion
-            MyApplication.tokenManager,
-            MyApplication.subSectorApiService,
-            context = this
-        )
-
-        locacionesRepository = LocacionRepository(
-            MyApplication.tokenManager,
-            MyApplication.locacionApiService
-        )
-
-        sectorRepository = SectorRepository(
-            MyApplication.tokenManager,
-            MyApplication.sectorApiService
-        )
-
-        activoRepository = ActivoRepository(
-            MyApplication.tokenManager,
-            MyApplication.activoApiService,
-            this
-        )
-
         setupTableComponent()
+        setupRepositorys()
         idEmpresa = MyApplication.tokenManager.getCompanyId()!!
+
+        binding.header.btnBack.setOnClickListener {
+            finish()
+        }
 
         if (idEmpresa != 0) {
             obtenerLocaciones(idEmpresa)
@@ -101,7 +85,7 @@ class DescargarSSActivity(
 
         headerLayout.removeAllViews()
 
-        listOf("Nombre", "Tag RFID", "Descargar").forEach { title ->
+        listOf("Nombre", "Tag Rfid", "Descargar").forEach { title ->
             val tv = TextView(this).apply {
                 layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
                 text = title
@@ -112,8 +96,9 @@ class DescargarSSActivity(
             headerLayout.addView(tv)
         }
 
-        adapter = SubSectorAdapter()
+        adapter = DescargarSubSectorAdapter()
 
+// En tu configuración del adapter
         adapter.onAddClick = { subSector ->
             Log.d("INFORMACION DEL SUBSECTOR", "info: ${subSector}")
 
@@ -126,13 +111,38 @@ class DescargarSSActivity(
                 Log.d("INFO ANTES DE CONSULTA", "info SS: ${subSectorDB}")
                 Log.d("INFO ANTES DE CONSULTA", "info ACT: ${activoDB}")
 
-                descargarSubsectorYActivo(subSectorDB, activoDB)
+                // Pasar el subSector original para poder marcarlo como descargado
+                descargarSubsectorYActivo(subSectorDB, activoDB, subSector)
             }
         }
 
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+    }
+
+    private fun setupRepositorys() {
+        subsectorRepository = SubSectorRepository( //reutilizamos las instacias creadas al inicio de la aplicacion
+            MyApplication.tokenManager,
+            MyApplication.subSectorApiService,
+            context = this
+        )
+
+        locacionesRepository = LocacionRepository(
+            MyApplication.tokenManager,
+            MyApplication.locacionApiService
+        )
+
+        sectorRepository = SectorRepository(
+            MyApplication.tokenManager,
+            MyApplication.sectorApiService
+        )
+
+        activoRepository = ActivoRepository(
+            MyApplication.tokenManager,
+            MyApplication.activoApiService,
+            this
+        )
     }
 
     private fun setupDataOnTable() {
@@ -144,6 +154,10 @@ class DescargarSSActivity(
         adapter.submitList(subSectorList)
         progressBar.visibility = View.GONE
         emptyState.visibility = if (subSectorList.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private suspend fun obtenerActivos(idSubSector: Int, idEmpresa: Int, status: Boolean): List<Activo>? {
+        return activoRepository.obtenerActivos(idSubSector, idEmpresa, status)
     }
 
     private fun setupLocationSpinner() {
@@ -165,9 +179,8 @@ class DescargarSSActivity(
                 binding.spinnerLocation.dismissDropDown()
                 binding.spinnerLocation.clearFocus()
 
-                Log.d("LocationSpinner", "Seleccionado: ${selectedLocacion.name}")
-                Log.d("LocationSpinner", "ID: ${selectedLocacion.id}")
-                Log.d("LocationSpinner", "Otras propiedades: ${selectedLocacion}")
+                // RESETEAR EL SELECTOR DE SECTORES
+                resetSectorSpinner()
 
                 obtenerSectores(selectedLocacion.id, idEmpresa, true)
             }
@@ -197,8 +210,42 @@ class DescargarSSActivity(
                 Log.d("SectorSpinner", "Otras propiedades: ${selectedSectors}")
 
                 obtenerSubsectores(selectedSectors.id, idEmpresa)
-
             }
+    }
+
+    private fun resetSectorSpinner() {
+        binding.spinnerSector.setText("", false)
+
+        sectorList = emptyList()
+
+        subSectorList = emptyList()
+
+        val emptyAdapter = SelectLocacionAdapter(this, emptyList())
+        binding.spinnerSector.setAdapter(emptyAdapter)
+
+        setupDataOnTable()
+    }
+
+    private fun obtenerSectores(idLocacion: Int, idEmpresa: Int, status: Boolean) {
+        lifecycleScope.launch {
+            val response = sectorRepository.obtenerSectores(idLocacion, idEmpresa, status)
+            response
+                .onSuccess { lista ->
+                    sectorList = lista ?: emptyList()
+
+                    Log.d("SECTOR", "SECTORES TRAIDOS ${sectorList}")
+
+                    setupSectorSpinner()
+                }
+                .onFailure { error ->
+                    sectorList = emptyList()
+
+                    Toast.makeText(this@DescargarSSActivity, "Error al cargar los sectores", Toast.LENGTH_SHORT).show()
+
+                    // En caso de error, también resetear el spinner
+                    resetSectorSpinner()
+                }
+        }
     }
 
     private fun obtenerSubsectores(idSector: Int, idEmpresa: Int) {
@@ -223,14 +270,11 @@ class DescargarSSActivity(
             val response = locacionesRepository.obtenerLocaciones(idEmpresa, true)
             response
                 .onSuccess { lista ->
-
                     locacionesList = lista ?: emptyList()
 
                     setupLocationSpinner()
-
                 }
                 .onFailure { error ->
-
                     locacionesList = emptyList()
 
                     Toast.makeText(this@DescargarSSActivity, "Error al cargar locaciones", Toast.LENGTH_SHORT).show()
@@ -238,40 +282,23 @@ class DescargarSSActivity(
         }
     }
 
-    private fun obtenerSectores(idLocacion: Int, idEmpresa: Int, status: Boolean) {
-        lifecycleScope.launch {
-            val response = sectorRepository.obtenerSectores(idLocacion, idEmpresa, status)
-            response
-                .onSuccess { lista ->
-
-                    sectorList = lista ?: emptyList()
-
-                    Log.d("SECTOR", "SECTORES TRAIDOS ${sectorList}")
-
-                    setupSectorSpinner()
-
-                }
-                .onFailure { error ->
-
-                    sectorList = emptyList()
-
-                    Toast.makeText(this@DescargarSSActivity, "Error al cargar los sectores", Toast.LENGTH_SHORT).show()
-                }
-        }
-    }
-
-    private suspend fun obtenerActivos(idSubSector: Int, idEmpresa: Int, status: Boolean): List<Activo>? {
-        return activoRepository.obtenerActivos(idSubSector, idEmpresa, status)
-    }
-
-    private fun descargarSubsectorYActivo(subSector: aumax.estandar.axappestandar.data.local.entities.SubSector, activos: List<Active>) {
+    // Función modificada para incluir el subSector original
+    private fun descargarSubsectorYActivo(
+        subSector: aumax.estandar.axappestandar.data.local.entities.SubSector,
+        activos: List<Active>,
+        originalSubSector: SubSector // Agregar este parámetro
+    ) {
         lifecycleScope.launch {
             val response = subsectorRepository.insertarSubSectorYActivos(subSector, activos)
             response
                 .onSuccess { exito ->
+                    // ✅ Éxito - marcar como descargado
+                    adapter.markAsDownloaded(originalSubSector.id)
                     Toast.makeText(this@DescargarSSActivity, "${exito}", Toast.LENGTH_SHORT).show()
                 }
                 .onFailure { error ->
+                    // ❌ Error - desactivar ítem activo
+                    adapter.deactivateActiveItem()
                     Toast.makeText(this@DescargarSSActivity, "Error al Descargar los activos", Toast.LENGTH_SHORT).show()
                     Log.d("ERROR AL OBTENER ACTIVOS", "${error}")
                 }

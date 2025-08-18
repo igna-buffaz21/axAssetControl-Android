@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    >
+
+    <!-- Header reutilizable -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/layout_header" />
+
+    <!-- Contenido principal -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
+
+        <!-- Título del Mini Menú -->
+        <TextView
+            android:id="@+id/tv_menu_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Configuracion Offline"
+            android:textSize="24sp"
+            android:textStyle="normal"
+            android:textColor="#2C2C2C"
+            android:layout_marginBottom="32dp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.05" />
+
+        <!-- Card con las opciones -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            app:cardElevation="8dp"
+            app:cardUseCompatPadding="true"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="#F8F9FA">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Opción 1 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/descargar_ss"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Descargar Subsectores"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="#000000"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    app:rippleColor="#FFFFFF" />
+
+                <!-- Opción 2 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ver_ss_descargados"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Ver Subsectores"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="#000000"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    app:rippleColor="#FFFFFF" />
+
+                <!-- Opción 3 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ver_controles"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Ver Controles"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#000000"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    app:rippleColor="#FFFFFF" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Espacio para logo secundario -->
+        <ImageView
+            android:id="@+id/logoAumax"
+            android:layout_width="120dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="32dp"
+            android:scaleType="centerInside"
+            android:alpha="0.6" />
+
+    </LinearLayout>
+
+</LinearLayout>

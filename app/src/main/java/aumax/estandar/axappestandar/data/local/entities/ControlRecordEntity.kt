@@ -20,8 +20,8 @@ import androidx.room.PrimaryKey
 data class ControlRecord(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val id_subsector: Int,
-    val date: Int,
-    val status: Int,
+    val date: Long,
+    val status: String,
     val id_company: Int,
     val sync: Boolean
 )

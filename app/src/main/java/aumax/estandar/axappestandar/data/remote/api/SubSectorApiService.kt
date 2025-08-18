@@ -21,4 +21,8 @@ interface SubSectorApiService {
                                @Query("idSubSector") idSubSector: Int,
                                @Query("idEmpresa") idEmpresa: Int) : Response<ResponseAsignarTagSS>
 
+    @GET("api/SubSector/ObtenerSubSectorPorRFID")
+    suspend fun obtenerSubSectorPorRfid(@Query("Rfid") Rfid: String,
+                                        @Query("idEmpresa") idEmpresa: Int ) : Response<SubSector>
+
 }

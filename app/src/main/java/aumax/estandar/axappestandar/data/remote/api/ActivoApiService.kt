@@ -3,6 +3,7 @@ package aumax.estandar.axappestandar.data.remote.api
 import aumax.estandar.axappestandar.data.models.Activos.Activo
 import aumax.estandar.axappestandar.data.models.Activos.ResponseAsignarTagActivo
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -23,5 +24,14 @@ interface ActivoApiService {
                                 @Query("idActivo") idActivo: Int,
                                 @Query("idEmpresa") idEmpresa: Int
     ) : Response<ResponseAsignarTagActivo>
+
+    @GET("api/Activo/ObtenerActivoPorRfid")
+    suspend fun obtenerActivoPorRfid(@Query("rfid") Rfid: String,
+                                     @Query("idEmpresa") idEmpresa: Int,
+                                     ) : Response<Activo>
+
+    @PUT("api/Activo/ReasignarTagRfidDeLugar")
+    suspend fun reasignarTagRfidDeLugar(@Query("idActivo") idActivo: Int,
+                                        @Query("idSubSector") idSubSector: Int ) : Response<ResponseAsignarTagActivo>
 
 }

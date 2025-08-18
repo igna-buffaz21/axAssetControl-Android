@@ -2,7 +2,6 @@ package aumax.estandar.axappestandar.activitys
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -14,19 +13,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import aumax.estandar.axappestandar.MyApplication
 import aumax.estandar.axappestandar.data.models.SubSector.SubSector
-import aumax.estandar.axappestandar.data.toEntity
 import aumax.estandar.axappestandar.databinding.ActivityVerSsDescargadosBinding
 import aumax.estandar.axappestandar.repository.ActivoRepository
 import aumax.estandar.axappestandar.repository.SubSectorRepository
 import aumax.estandar.axappestandar.utils.adapters.SubSectorAdapter
-// aumax.estandar.axappestandar.utils.dialogs.ModalActivosDialog
+import aumax.estandar.axappestandar.utils.adapters.VerSubSectorAdapter
+import aumax.estandar.axappestandar.utils.dialogs.ModalActivosDialog
 import kotlinx.coroutines.launch
 
 class VerSSDActivity(
 ) : AppCompatActivity() {
 
     private lateinit var binding: ActivityVerSsDescargadosBinding
-    private lateinit var adapter: SubSectorAdapter
+    private lateinit var adapter: VerSubSectorAdapter
     private var subSectorList: List<SubSector> = emptyList()
     private lateinit var subsectorRepository: SubSectorRepository
     private lateinit var activoRepository: ActivoRepository
@@ -37,20 +36,12 @@ class VerSSDActivity(
         binding = ActivityVerSsDescargadosBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        subsectorRepository = SubSectorRepository( //reutilizamos las instacias creadas al inicio de la aplicacion
-            MyApplication.tokenManager,
-            MyApplication.subSectorApiService,
-            context = this
-        )
-
-        activoRepository = ActivoRepository(
-            MyApplication.tokenManager,
-            MyApplication.activoApiService,
-            this
-        )
-
-
+        setupRepositorys()
         setupTableComponent()
+
+        binding.header.btnBack.setOnClickListener {
+            finish()
+        }
 
         val tokenManager = MyApplication.tokenManager
         val idCompany = tokenManager.getCompanyId()
@@ -64,6 +55,8 @@ class VerSSDActivity(
     }
 
     private fun setupTableComponent() {
+
+        binding.btnSincronizar.setVisibility(View.GONE);
 
         val tokenManager = MyApplication.tokenManager
 
@@ -79,7 +72,7 @@ class VerSSDActivity(
 
         headerLayout.removeAllViews()
 
-        listOf("Nombre", "Tag RFID", "Agregar Tag").forEach { title ->
+        listOf("Nombre", "Tag RFID", "Ver").forEach { title ->
             val tv = TextView(this).apply {
                 layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
                 text = title
@@ -90,23 +83,37 @@ class VerSSDActivity(
             headerLayout.addView(tv)
         }
 
-        adapter = SubSectorAdapter()
+        adapter = VerSubSectorAdapter()
 
         adapter.onAddClick = { subSector ->
             Log.d("INFORMACION DEL SUBSECTOR", "info: ${subSector}")
 
-            /*lifecycleScope.launch {
+            lifecycleScope.launch {
                 val modal = ModalActivosDialog(
                     this@VerSSDActivity,
                     subSector,
                     activoRepository
                 )
                 modal.show()
-            }*/
+            }
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+    }
+
+    private fun setupRepositorys() {
+        subsectorRepository = SubSectorRepository( //reutilizamos las instacias creadas al inicio de la aplicacion
+            MyApplication.tokenManager,
+            MyApplication.subSectorApiService,
+            context = this
+        )
+
+        activoRepository = ActivoRepository(
+            MyApplication.tokenManager,
+            MyApplication.activoApiService,
+            this
+        )
     }
 
     private fun setupDataOnTable() {

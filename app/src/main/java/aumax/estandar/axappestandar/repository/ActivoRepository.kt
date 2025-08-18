@@ -87,5 +87,64 @@ class ActivoRepository(
         }
     }
 
+    suspend fun obtenerActivosPorRfid(tagRfid: String, idEmpresa: Int) : Result<Activo?> {
+        return try {
+            val response = activoApiService.obtenerActivoPorRfid(tagRfid, idEmpresa)
+
+            if (response.isSuccessful) {
+                val activos = response.body()
+                Result.success(activos)
+            }
+            else {
+                Result.failure(Exception("Error ${response}"))
+            }
+        }
+        catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun reasignarActivo(idActivo: Int, idSubSector: Int) : Result<Response<ResponseAsignarTagActivo>> {
+        return try {
+            val response = activoApiService.reasignarTagRfidDeLugar(idActivo, idSubSector)
+
+            if (response.isSuccessful) {
+                Result.success(response)
+            }
+            else {
+                Result.failure(Exception("Error ${response}"))
+            }
+        }
+        catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun obtenerActivosPorRfidBD(tagRfid: String, idEmpresa: Int) : Result<List<Active>> {
+        return try {
+            val id_subsector = activoDAO.obtenerIdSubsector(tagRfid, idEmpresa)
+
+            Log.d("RESPUESTA DE DAO", "${id_subsector}")
+
+            if (id_subsector != 0) {
+
+                val activos = activoDAO.obtenerActivosBD(id_subsector)
+
+                if (activos.size > 0) {
+                    Result.success(activos)
+                }
+                else {
+                    Result.failure(Exception("Error al encontrar los activos"))
+                }
+            }
+            else {
+                Result.failure(Exception("Error al encontrar el id del subsector"))
+            }
+        }
+        catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 
 }

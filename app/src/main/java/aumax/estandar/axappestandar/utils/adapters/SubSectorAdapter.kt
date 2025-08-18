@@ -10,54 +10,71 @@ import aumax.estandar.axappestandar.data.models.SubSector.SubSector
 import aumax.estandar.axappestandar.databinding.ItemTablaBinding
 
 class SubSectorAdapter :
-    ListAdapter<SubSector,SubSectorAdapter.ViewHolder>(DiffCallback()) { //SubSector (tipo de dato para mostrar), SubSectorAdapter.ViewHolder (es el tipo de ViewHolder que vas a usar para mostrar cada ítem), DiffCallback() (es la lógica para comparar si los ítems cambiaron.)
+    ListAdapter<SubSector, SubSectorAdapter.ViewHolder>(DiffCallback()) {
 
     var onAddClick: ((SubSector) -> Unit)? = null
-    private var leerTag: Boolean = false
 
-    class ViewHolder(val binding: ItemTablaBinding) : //item dentro de la tabla
+    // Guarda la posición del ítem activo (si hay alguno)
+    private var activePosition: Int? = null
+
+    inner class ViewHolder(val binding: ItemTablaBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder { //crea la vista vacia //se llama solo si no hay vistas para reciclar
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemTablaBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) { //aca asignamos los datos a las vistas // se llama cada vez que un item se va a mostrar
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val subSector = getItem(position)
+
         with(holder.binding) {
             tvName.text = subSector.name
             tvTag.text = subSector.tagRfid
-            //tvStatus.text = if (subSector.status) "Activo" else "Inactivo"
+
+            // Cambia icono según si este ítem es el activo
+            btnAdd.setImageResource(
+                if (position == activePosition) R.drawable.ic_reader else R.drawable.ic_add
+            )
+
             btnAdd.setOnClickListener {
-                if (!leerTag) {
-                    leerTag = true
+                val currentPosition = holder.adapterPosition
+                if (currentPosition == RecyclerView.NO_POSITION) return@setOnClickListener
 
-                    holder.binding.btnAdd.setImageResource(
-                        R.drawable.ic_reader
-                    )
+                if (activePosition == currentPosition) {
+                    // Si ya estaba activo, lo desactivo
+                    val oldPosition = activePosition
+                    activePosition = null
+                    oldPosition?.let { notifyItemChanged(it) }
+                } else {
+                    // Desactivo el que estaba activo antes
+                    activePosition?.let { notifyItemChanged(it) }
 
+                    // Activo este
+                    activePosition = currentPosition
+                    notifyItemChanged(currentPosition)
+
+                    // Aviso a la Activity
                     onAddClick?.invoke(subSector)
                 }
-                else {
-                    leerTag = false
-
-                    holder.binding.btnAdd.setImageResource(
-                        R.drawable.ic_add
-                    )
-                }
             }
-
         }
     }
 
     class DiffCallback : DiffUtil.ItemCallback<SubSector>() {
-        override fun areItemsTheSame(oldItem: SubSector, newItem: SubSector): Boolean { //son el mismo objeto logico?
-            return oldItem.id == newItem.id
-        }
+        override fun areItemsTheSame(oldItem: SubSector, newItem: SubSector) =
+            oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: SubSector, newItem: SubSector): Boolean { //tienen exactamente lo mismo dato? no -> se ejecuta onBindViewHolder
-            return oldItem == newItem
+        override fun areContentsTheSame(oldItem: SubSector, newItem: SubSector) =
+            oldItem == newItem
+    }
+
+    /** 🔹 Llamar desde la Activity para desactivar automáticamente el ítem activo */
+    fun deactivateActiveItem() {
+        activePosition?.let {
+            val oldPos = it
+            activePosition = null
+            notifyItemChanged(oldPos)
         }
     }
 }

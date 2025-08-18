@@ -34,6 +34,23 @@
             android:gravity="center"
             android:textAlignment="center" />
 
+        <!-- Botón Sincronizar -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_sincronizar"
+            android:layout_width="240dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:text="Sincronizar"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#000000"
+            app:cornerRadius="12dp"
+            app:elevation="4dp"
+            app:rippleColor="#FFFFFF" />
+
         <!-- Tabla (contenido principal) -->
         <include
             android:id="@+id/table_component"

@@ -17,6 +17,7 @@ class ActivoAdapter :
 
     var onAddClick: ((Activo) -> Unit)? = null
     private var lecturaIniciada: Boolean = false
+    private var activePosition: Int? = null
 
     class ViewHolder(val binding: ItemTablaBinding) : //item dentro de la tabla
         RecyclerView.ViewHolder(binding.root)
@@ -31,28 +32,32 @@ class ActivoAdapter :
         with(holder.binding) {
             tvName.text = activo.name
             tvTag.text = activo.tagRfid
-            //tvStatus.text = if (subSector.status) "Activo" else "Inactivo"
+
+            // Cambia icono según si este ítem es el activo
+            btnAdd.setImageResource(
+                if (position == activePosition) R.drawable.ic_reader else R.drawable.ic_add
+            )
 
             btnAdd.setOnClickListener {
+                val currentPosition = holder.adapterPosition
+                if (currentPosition == RecyclerView.NO_POSITION) return@setOnClickListener
 
-                if (!lecturaIniciada) {
-                    lecturaIniciada = true
+                if (activePosition == currentPosition) {
+                    // Si ya estaba activo, lo desactivo
+                    val oldPosition = activePosition
+                    activePosition = null
+                    oldPosition?.let { notifyItemChanged(it) }
+                } else {
+                    // Desactivo el que estaba activo antes
+                    activePosition?.let { notifyItemChanged(it) }
 
-                    holder.binding.btnAdd.setImageResource(
-                        R.drawable.ic_reader
-                    )
+                    // Activo este
+                    activePosition = currentPosition
+                    notifyItemChanged(currentPosition)
 
+                    // Aviso a la Activity
                     onAddClick?.invoke(activo)
                 }
-                else {
-                    lecturaIniciada = false
-
-                    holder.binding.btnAdd.setImageResource(
-                        R.drawable.ic_add
-                    )
-
-                }
-
             }
         }
     }
@@ -66,4 +71,13 @@ class ActivoAdapter :
             return oldItem == newItem
         }
     }
+
+    fun deactivateActiveItem() {
+        activePosition?.let {
+            val oldPos = it
+            activePosition = null
+            notifyItemChanged(oldPos)
+        }
+    }
+
 }

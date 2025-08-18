@@ -43,6 +43,8 @@ class AgregarTagAActivity(
     private lateinit var activoRepository: ActivoRepository
     private var activoList: List<Activo> = emptyList()
 
+    private var activoListMostrar: MutableList<Activo> = ArrayList()
+
     //RFID
     private var _oAxLector: AxLector? = null
     private var listenerKeyPressDown: IOnKeyPressDown? = null
@@ -322,6 +324,7 @@ class AgregarTagAActivity(
                     if (listTagsLeidosA.size > 1) {
                         leerTagA = false
                         listTagsLeidosA.clear()
+                        adapter.deactivateActiveItem()
 
                         runOnUiThread {
                             Toast.makeText(this@AgregarTagAActivity, "Se detectaron múltiples tags, intenta nuevamente.", Toast.LENGTH_LONG).show()
@@ -338,11 +341,13 @@ class AgregarTagAActivity(
 
                             leerTagA = false
                             listTagsLeidosA.clear()
+                            adapter.deactivateActiveItem()
                         }
                         else {
                             Log.d("PRUEBA LECTOR", "Se canceló porque se detectaron múltiples tags desde 2")
                             leerTagA = false
                             listTagsLeidosA.clear()
+                            adapter.deactivateActiveItem()
                         }
                     }, 500) // Espera 500ms para ver si se suma otro tag
                 }
@@ -420,12 +425,28 @@ class AgregarTagAActivity(
 
         adapter.onAddClick = { activo ->
 
+            if (Configuracion.potenciaRFID != 5) {
+                Log.d("CAMBIANDO POTENCIA RFID", "SE ESTA CAMBIANDO LA POTENCIA A 5")
+
+                _oAxLector?.DetenetLecturRFID()
+
+                _oAxLector?.LimpiarChainway()
+
+                Configuracion.potenciaRFID = 5 ///VER
+
+                _oAxLector?.IniciarLecturaRFID()
+
+            }
+
             leerTagA = true
 
             activoAAsignar = activo
 
             //Toast.makeText(this@AgregarTagAActivity, "Leyendo tag para ${activo.name}", Toast.LENGTH_SHORT).show()
 
+        }
+        binding.header.btnBack.setOnClickListener {
+            finish()
         }
     }
 
@@ -444,21 +465,38 @@ class AgregarTagAActivity(
 
         progressBar.visibility = View.VISIBLE
 
-        adapter.submitList(activoList)
-        progressBar.visibility = View.GONE
-        emptyState.visibility = if (activoList.isEmpty()) View.VISIBLE else View.GONE
+        adapter.submitList(null) // Limpia completamente
+
+        // ✅ Carga los nuevos datos en el siguiente frame
+        Handler(Looper.getMainLooper()).post {
+            adapter.submitList(activoListMostrar.toList()) // Crea nueva instancia de la lista
+            progressBar.visibility = View.GONE
+            emptyState.visibility = if (activoListMostrar.isEmpty()) View.VISIBLE else View.GONE
+        }
     }
 
     private fun obtenerActivos(tagRfid: TagRFID) {
         lifecycleScope.launch {
-            Toast.makeText(this@AgregarTagAActivity, "Tag Recibido ${tagRfid.EPC}", Toast.LENGTH_SHORT).show()
-            val response = activoRepository.obtenerActivos(tagRfid.EPC.toString())
+            //Toast.makeText(this@AgregarTagAActivity, "Tag Recibido ${tagRfid.EPC}", Toast.LENGTH_SHORT).show()
+            val response = activoRepository.obtenerActivos(tagRfid.TID.toString())
             response
                 .onSuccess { lista ->
+                    setupDataOnTable()
 
                     activoList = lista ?: emptyList()
+                    activoListMostrar.clear()
 
-                    Log.d("ACTIVOS", "SECTORES TRAIDOS ${activoList}")
+                    activoList.forEach { activo ->
+                        if (activo.tagRfid == null) {
+                            activoListMostrar.add(activo)
+                        }
+                    }
+
+                    if (activoListMostrar.size == 0) {
+                        Toast.makeText(this@AgregarTagAActivity, "No hay ningun activo para asignar tag", Toast.LENGTH_SHORT).show()
+                    }
+
+                    Log.d("ACTIVOS", "SECTORES TRAIDOS ${activoListMostrar}")
 
                     setupDataOnTable()
 
@@ -466,8 +504,11 @@ class AgregarTagAActivity(
                 .onFailure { error ->
 
                     activoList = emptyList()
+                    activoListMostrar.clear()
 
                     Log.d("ERROR AL OBTENER LOS ACTIVOS", "ERROR: ${response}")
+
+                    setupDataOnTable()
 
                     Toast.makeText(this@AgregarTagAActivity, "Error al cargar los activos", Toast.LENGTH_SHORT).show()
                 }
@@ -476,15 +517,27 @@ class AgregarTagAActivity(
 
     private fun guardarTag(activo: Activo, tagCode: TagRFID) {
         lifecycleScope.launch {
-            Toast.makeText(this@AgregarTagAActivity, "Tag a asignar ${activo.name} TAG: ${tagCode.EPC.toString()}", Toast.LENGTH_SHORT).show()
-            val response = activoRepository.asigarTagRfidActivo(tagCode.EPC, activo.id, 1)
+            val response = activoRepository.asigarTagRfidActivo(tagCode.TID, activo.id, 1)
 
             response
                 .onSuccess {
                     Toast.makeText(this@AgregarTagAActivity, "Tag asignado con exito", Toast.LENGTH_SHORT).show()
                     listTagsLeidosA.clear()
                     leerTagA = false
-                    //obtenerActivos()
+
+                    val positionA = activoListMostrar.indexOfFirst { it.id == activo.id } //buscamos indice del actualizado
+
+                    if (positionA != -1) {
+                        val updatedActivo = activoListMostrar[positionA].copy(tagRfid = tagCode.TID) //copia nueva del subsector actualizado
+
+                        val nuevaLista = activoListMostrar.toMutableList()
+                        nuevaLista[positionA] = updatedActivo
+
+                        activoListMostrar = nuevaLista
+
+                        adapter.submitList(nuevaLista)
+                    }
+
                 }
                 .onFailure {
                     Toast.makeText(this@AgregarTagAActivity, "Error: ${response}", Toast.LENGTH_SHORT).show()

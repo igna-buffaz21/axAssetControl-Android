@@ -22,11 +22,18 @@ class SeleccionABMActivity(
     }
 
     private fun setupListeners() {
+        binding.header.btnBack.setOnClickListener {
+            finish()
+        }
+
         binding.btnAgregarTagSs.setOnClickListener {
             navigateToAgregarTagSSActivity()
         }
         binding.btnAgregarTagA.setOnClickListener {
             navigateToAgregarTagAActivity()
+        }
+        binding.btnReasignarActivo.setOnClickListener {
+            navigateToReasignarTagSSActivity()
         }
     }
 
@@ -44,6 +51,14 @@ class SeleccionABMActivity(
 
     private fun navigateToAgregarTagSSActivity() {
         val intent = Intent(this, AgregarTagSSActivity::class.java)
+
+        startActivity(intent) //inicia la otra actividad
+
+        //finish() //finaliza esta actividad
+    }
+
+    private fun navigateToReasignarTagSSActivity() {
+        val intent = Intent(this, ReasignarTagActivoActivity::class.java)
 
         startActivity(intent) //inicia la otra actividad
 

@@ -30,7 +30,7 @@ data class DetailControl(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val id_control: Int,
     val id_activo: Int,
-    val status: Int,
+    val status: String,
     val id_auditor: Int,
     val sync: Boolean
 )

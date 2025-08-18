@@ -9,11 +9,16 @@
     <!-- Colores de fondo -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="enabledfalse">#E43A3A3A</color>
     <color name="lightGray">#F8F9FA</color>
-    <color name="mediumGray">#E0E0E0</color>
+    <color name="mediumGray">#626262</color>
 
     <color name="primary_color">#4A90E2</color>
     <color name="accent_color">#FF6B6B</color>
     <color name="text_primary">#1A1A1A</color>
     <color name="background_white">#FFFFFF</color>
+
+    <color name="disponible">#4DB651</color>
+    <color name="noDisponible">#D7564A</color>
+
 </resources>

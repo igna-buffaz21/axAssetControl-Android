@@ -61,8 +61,43 @@
                     android:textColor="#FFFFFF"
                     android:backgroundTint="#000000"
                     app:cornerRadius="12dp"
+                    android:layout_marginBottom="16dp"
                     app:elevation="4dp"
                     app:rippleColor="#FFFFFF" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_leer_tag_subsector"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Leer Tag Subsector"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="@color/mediumGray"
+                    android:backgroundTint="@color/enabledfalse"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:enabled="false"
+                    app:rippleColor="#FFFFFF" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirmar"
+                    android:layout_width="210dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Confirmar"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:textAllCaps="false"
+                    android:textColor="@color/mediumGray"
+                    android:backgroundTint="@color/enabledfalse"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    android:enabled="false"
+                    app:rippleColor="#FFFFFF" />
+
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

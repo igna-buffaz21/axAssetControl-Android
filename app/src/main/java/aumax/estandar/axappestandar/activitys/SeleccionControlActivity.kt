@@ -22,14 +22,18 @@ class SeleccionControlActivity(
     }
 
     private fun setupListeners() {
-        binding.descargarSs.setOnClickListener {
-            navigateToDescargarSS()
+        binding.header.btnBack.setOnClickListener {
+            finish()
         }
-        binding.verSsDescargados.setOnClickListener {
-            navigateToVerSS()
+
+        binding.controlOff.setOnClickListener {
+            navigateToControlOff()
         }
         binding.controlOn.setOnClickListener {
             navigateToControlOn()
+        }
+        binding.configuracionOff.setOnClickListener {
+            navigateToConfigOff()
         }
     }
 
@@ -44,22 +48,6 @@ class SeleccionControlActivity(
         binding.header.tvCompanyName.text = nombreEmpresa
     }
 
-    private fun navigateToDescargarSS() {
-        val intent = Intent(this, DescargarSSActivity::class.java)
-
-        startActivity(intent) //inicia la otra actividad
-
-        //finish() //finaliza esta actividad
-    }
-
-    private fun navigateToVerSS() {
-        val intent = Intent(this, VerSSDActivity::class.java)
-
-        startActivity(intent) //inicia la otra actividad
-
-        //finish() //finaliza esta actividad
-    }
-
     private fun navigateToControlOn() {
         val intent = Intent(this, ControlOnlineActivity::class.java)
 
@@ -67,4 +55,21 @@ class SeleccionControlActivity(
 
         //finish() //finaliza esta actividad
     }
+
+    private fun navigateToControlOff() {
+        val intent = Intent(this, ControlOfflineActivity::class.java)
+
+        startActivity(intent) //inicia la otra actividad
+
+        //finish() //finaliza esta actividad
+    }
+
+    private fun navigateToConfigOff() {
+        val intent = Intent(this, SeleccionConfiguracionOffActivity::class.java)
+
+        startActivity(intent) //inicia la otra actividad
+
+        //finish() //finaliza esta actividad
+    }
+
 }

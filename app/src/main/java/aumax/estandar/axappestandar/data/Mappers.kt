@@ -20,6 +20,22 @@ fun Activo.toEntity(): Active {
     )
 }
 
+fun Active.toEntity(): Activo {
+    return Activo(
+        id = this.id,
+        idSubsector = this.id_subsector,
+        name = this.name,
+        brand = this.brand,
+        model = this.model,
+        seriaNumber = this.seria_number,
+        tagRfid = this.tag_rfid ?: "",
+        idEmpresa = this.id_company,
+        version = this.version,
+        status = this.status,
+        encontrado = ""
+    )
+}
+
 fun SubSector.toEntity() : aumax.estandar.axappestandar.data.local.entities.SubSector {
     return aumax.estandar.axappestandar.data.local.entities.SubSector(
         id = this.id,
