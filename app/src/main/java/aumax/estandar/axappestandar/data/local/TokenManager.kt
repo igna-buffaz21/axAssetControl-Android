@@ -82,6 +82,11 @@ class TokenManager(context: Context) { ///context seria como la referancia de la
         return sharedPreferences.getString("company_name", null)
     }
 
+    fun obtenerIdUsuario(): Int? {
+        val id = sharedPreferences.getInt("user_id", -1)
+        return if (id == -1) null else id
+    }
+
     fun clearAll() {
         sharedPreferences.edit().clear().apply()
     }

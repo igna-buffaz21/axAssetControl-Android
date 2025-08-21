@@ -53,6 +53,10 @@ class ActivosAdapter(
                     layoutMarca.visibility = View.GONE
                 }
 
+                tvActivoCodigo.visibility = View.GONE
+
+
+
                 // Si ni marca ni versión están disponibles, ocultar todo el contenedor
                 val hasAdditionalInfo = !activo.brand.isNullOrBlank() || !activo.version.toString().isNullOrBlank()
                 // Asumiendo que el LinearLayout padre de marca y versión tiene un ID

@@ -46,6 +46,11 @@ class ControlOfflineActivity(
     private lateinit var binding: ActivityControlOnlineBinding
     private lateinit var adapter: ActivoControlAdapter
 
+    private var idCompany: Int = 0
+    private var idUsuario: Int = 0
+
+    private var subSectorName: String = ""
+
     //RFID
     private var _oAxLector: AxLector? = null
     private var listenerKeyPressDown: IOnKeyPressDown? = null
@@ -214,6 +219,15 @@ class ControlOfflineActivity(
         recyclerView.adapter = adapter
     }
 
+    private fun setupNombreSubSector() {
+        if (subSectorName != "") {
+            binding.tvTableTitle.text = subSectorName
+        }
+        else {
+            binding.tvTableTitle.text = "Control de Activos"
+        }
+    }
+
     private var startTime: Long = 0
     var keyUpFalg = true
 
@@ -376,6 +390,11 @@ class ControlOfflineActivity(
 
     private fun setupHeaderComponent() {
         val tokenManager = MyApplication.tokenManager
+
+        if (tokenManager.getCompanyId() != null && tokenManager.obtenerIdUsuario() != null) {
+            idCompany = tokenManager.getCompanyId()!!
+            idUsuario = tokenManager.obtenerIdUsuario()!!
+        }
 
         val username = tokenManager.obtenerNombreUsuario()
         val nombreEmpresa = tokenManager.obtenerNombreEmpresa()
@@ -540,9 +559,21 @@ class ControlOfflineActivity(
         lifecycleScope.launch {
             Log.d("BUSCANDO ACTIVOS CON RFID: ", "${tagRfid}")
 
-            val response = activoRepository.obtenerActivosPorRfidBD(tagRfid, 1)
+            val response = activoRepository.obtenerActivosPorRfidBD(tagRfid, idCompany)
+
             response
                 .onSuccess { lista ->
+
+                    val nombreSubsector = activoRepository.obtenerNombreSubSector(tagRfid, idCompany)
+
+                    nombreSubsector
+                        .onSuccess { nSS ->
+                            subSectorName = nSS.toString()
+                            setupNombreSubSector()
+                        }
+                        .onFailure { error ->
+                            Log.d("ERROR", "${error}")
+                        }
 
                     activoList = lista.map { it.toEntity() }.toMutableList()
 
@@ -568,7 +599,7 @@ class ControlOfflineActivity(
         lifecycleScope.launch {
             val timestamp = Instant.now().epochSecond
 
-            val reponse = registroControlRepository.crearControlBD(idSubsectorControl, timestamp, 1)
+            val reponse = registroControlRepository.crearControlBD(idSubsectorControl, timestamp, idCompany)
             reponse
                 .onSuccess { id ->
                     Log.d("REGISTRO CONTROL CREADO CON EXITO", "se creo CON EL ID ${id}")
@@ -597,7 +628,7 @@ class ControlOfflineActivity(
                     id_control = idControl,
                     id_activo = activo.id,
                     status = status,
-                    id_auditor = 1015, // o el que corresponda
+                    id_auditor = idUsuario,
                     sync = false
                 )
             }
@@ -625,6 +656,8 @@ class ControlOfflineActivity(
         listTagsLeidos.clear()
         activoList.clear()
         idSubsectorControl = 0
+        subSectorName = ""
+        setupNombreSubSector()
     }
 
 }

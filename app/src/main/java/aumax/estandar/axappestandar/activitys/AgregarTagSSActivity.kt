@@ -47,13 +47,12 @@ class AgregarTagSSActivity(
     private lateinit var locacionesRepository: LocacionRepository
     private lateinit var sectorRepository: SectorRepository
 
+    private var idCompany: Int = 0
+
     //LISTAS
     private var locacionesList: List<Locacion> = emptyList()
     private var sectorList: List<Sector> = emptyList()
     private var subSectorList: List<SubSector> = emptyList()
-
-
-    private var idEmpresa: Int = 0
 
     //RFID
     private var _oAxLector: AxLector? = null
@@ -100,13 +99,7 @@ class AgregarTagSSActivity(
         setupListeners()
         RegistrarEventLecturaTag()
 
-        idEmpresa = MyApplication.tokenManager.getCompanyId()!!
-        if (idEmpresa != 0) {
-            obtenerLocaciones(idEmpresa)
-        }
-        else {
-            Toast.makeText(this@AgregarTagSSActivity, "Error Inesperado, reinicie la aplicacion", Toast.LENGTH_SHORT).show()
-        }
+        obtenerLocaciones(idCompany)
     }
 
     override fun onStart() {
@@ -346,6 +339,10 @@ class AgregarTagSSActivity(
     private fun setupHeaderComponent() {
         val tokenManager = MyApplication.tokenManager
 
+        if (tokenManager.getCompanyId() != null) {
+            idCompany = tokenManager.getCompanyId()!!
+        }
+
         val username = tokenManager.obtenerNombreUsuario()
         val nombreEmpresa = tokenManager.obtenerNombreEmpresa()
         binding.header.tvCompanyName.text = nombreEmpresa
@@ -413,7 +410,7 @@ class AgregarTagSSActivity(
                 // RESETEAR EL SELECTOR DE SECTORES
                 resetSectorSpinner()
 
-                obtenerSectores(selectedLocacion.id, idEmpresa, true)
+                obtenerSectores(selectedLocacion.id, idCompany, true)
             }
     }
 
@@ -440,7 +437,7 @@ class AgregarTagSSActivity(
                 Log.d("SectorSpinner", "ID: ${selectedSectors.id}")
                 Log.d("SectorSpinner", "Otras propiedades: ${selectedSectors}")
 
-                obtenerSubsectores(selectedSectors.id, idEmpresa)
+                obtenerSubsectores(selectedSectors.id, idCompany)
             }
     }
 
@@ -462,6 +459,7 @@ class AgregarTagSSActivity(
             val response = sectorRepository.obtenerSectores(idLocacion, idEmpresa, status)
             response
                 .onSuccess { lista ->
+
                     sectorList = lista ?: emptyList()
 
                     Log.d("SECTOR", "SECTORES TRAIDOS ${sectorList}")
@@ -469,6 +467,7 @@ class AgregarTagSSActivity(
                     setupSectorSpinner()
                 }
                 .onFailure { error ->
+
                     sectorList = emptyList()
 
                     Toast.makeText(this@AgregarTagSSActivity, "Error al cargar los sectores", Toast.LENGTH_SHORT).show()
@@ -484,7 +483,13 @@ class AgregarTagSSActivity(
             val response = subsectorRepository.obtenerSectores(idSector, idEmpresa)
             response
                 .onSuccess { lista ->
+                    Log.d("SUBSECTORES 1", "SUBSECTORES TRAIDOS ${lista}")
+
+
                     subSectorList = lista ?: emptyList()
+
+                    Log.d("SUBSECTORES 2", "SUBSECTORES TRAIDOS ${subSectorList}")
+
 
                     setupDataOnTable()
                 }
@@ -515,7 +520,7 @@ class AgregarTagSSActivity(
 
     private fun guardarTag(subSector: SubSector, tagRFID: String) {
         lifecycleScope.launch {
-            val response = subsectorRepository.asignarTagSS(tagRFID, subSector.id, 1)
+            val response = subsectorRepository.asignarTagSS(tagRFID, subSector.id, idCompany)
 
             response
                 .onSuccess {

@@ -51,6 +51,7 @@ class VerControlesOfflineActivity(
         setupListeners()
 
         val tokenManager = MyApplication.tokenManager
+
         val idCompany = tokenManager.getCompanyId()
 
         if (idCompany != null) {

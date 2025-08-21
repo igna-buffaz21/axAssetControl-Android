@@ -1,7 +1,9 @@
 package aumax.estandar.axappestandar.data.remote.api
 
 import aumax.estandar.axappestandar.data.models.Activos.Activo
+import aumax.estandar.axappestandar.data.models.Activos.ObtenerActivosOSSDTO
 import aumax.estandar.axappestandar.data.models.Activos.ResponseAsignarTagActivo
+import aumax.estandar.axappestandar.data.models.Activos.RetornarActivosDTOySubsectorDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -12,7 +14,8 @@ import retrofit2.http.Query
 
 interface ActivoApiService {
     @GET("api/SubSector/ObtenerPorTag")
-    suspend fun obtenerActivos(@Query("tagRfid") tagRfid: String) : Response<List<Activo>>
+    suspend fun obtenerActivos(@Query("tagRfid") tagRfid: String,
+                               @Query("idCompany") idCompany: Int) : Response<RetornarActivosDTOySubsectorDTO>
 
     @GET("api/Activo/SubSector/{idsubsector}")
     suspend fun obtenerActivoConIdSubSector(@Path("idsubsector") idSubSector: Int,
@@ -33,5 +36,8 @@ interface ActivoApiService {
     @PUT("api/Activo/ReasignarTagRfidDeLugar")
     suspend fun reasignarTagRfidDeLugar(@Query("idActivo") idActivo: Int,
                                         @Query("idSubSector") idSubSector: Int ) : Response<ResponseAsignarTagActivo>
+
+    @GET("api/Activo/ObtenerActivosPorEmpresa")
+    suspend fun obtenerTodosLosActivoEmpresa(@Query("idCompany") idCompany: Int) : Response<List<ObtenerActivosOSSDTO>>
 
 }

@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import aumax.estandar.axappestandar.MyApplication
 import aumax.estandar.axappestandar.R
 import aumax.estandar.axappestandar.data.models.Activos.Activo
+import aumax.estandar.axappestandar.data.models.Activos.ObtenerActivoDTO
+import aumax.estandar.axappestandar.data.models.Activos.ObtenerActivosOSSDTO
 import aumax.estandar.axappestandar.data.models.RegistroControl.CrearDetalleControlDTO
 import aumax.estandar.axappestandar.databinding.ActivityControlOnlineBinding
 import aumax.estandar.axappestandar.readers.AxLector
@@ -32,6 +34,8 @@ import aumax.estandar.axappestandar.repository.ActivoRepository
 import aumax.estandar.axappestandar.repository.RegistroControlRepository
 import aumax.estandar.axappestandar.utils.TagRFID
 import aumax.estandar.axappestandar.utils.adapters.ActivoControlAdapter
+import aumax.estandar.axappestandar.utils.dialogs.ActivosEncontradosSSDialog
+import aumax.estandar.axappestandar.utils.dialogs.ModalActivosDialog
 import aumax.estandar.axappestandar.utils.interfaces.IOnKeyPressDown
 import aumax.estandar.axappestandar.utils.interfaces.IOnKeyPressUp
 import aumax.estandar.axappestandar.utils.interfaces.ITagLeidoListener
@@ -51,10 +55,20 @@ class ControlOnlineActivity(
     private lateinit var registroControlRepository: RegistroControlRepository
 
     private var activoList: MutableList<Activo> = ArrayList()
+
+    private var activosCompanyList: MutableList<ObtenerActivosOSSDTO> = ArrayList()
+
     private var activoListEncontrados: MutableList<Activo> = ArrayList()
+    private var activoListEncontradosdeOtroSector: MutableList<ObtenerActivosOSSDTO> = ArrayList()
     private var idSubsectorControl: Int = 0
 
+    private var subSectorName: String = ""
+
     private var isControlActive = false
+
+    private var idCompany: Int = 0
+
+    private var idUsuario: Int = 0
 
     //RFID
     private var _oAxLector: AxLector? = null
@@ -119,6 +133,8 @@ class ControlOnlineActivity(
         setupTableComponent()
         setupListeners()
         RegistrarEventLecturaTag()
+
+        obtenerTodosLosActivosEmpresa(idCompany)
     }
 
     override fun onStart() {
@@ -341,6 +357,7 @@ class ControlOnlineActivity(
                         }
 
                         val listaFaltantes = activoList.filter { it.encontrado != "available" }
+
                         adapter.submitList(listaFaltantes)
                     }
                 }
@@ -377,6 +394,11 @@ class ControlOnlineActivity(
 
     private fun setupHeaderComponent() {
         val tokenManager = MyApplication.tokenManager
+
+        if (tokenManager.getCompanyId() != null && tokenManager.obtenerIdUsuario() != null) {
+            idCompany = tokenManager.getCompanyId()!!
+            idUsuario = tokenManager.obtenerIdUsuario()!!
+        }
 
         val username = tokenManager.obtenerNombreUsuario()
         val nombreEmpresa = tokenManager.obtenerNombreEmpresa()
@@ -483,6 +505,7 @@ class ControlOnlineActivity(
             }
             updateButtonUI()
         }
+
         binding.btnCancelarControl.setOnClickListener {
             Toast.makeText(this, "Control Cancelado", Toast.LENGTH_SHORT).show()
 
@@ -515,6 +538,15 @@ class ControlOnlineActivity(
         }
     }
 
+    private fun setupNombreSubSector() {
+        if (subSectorName != "") {
+            binding.tvTableTitle.text = subSectorName
+        }
+        else {
+            binding.tvTableTitle.text = "Control de Activos"
+        }
+    }
+
     private fun setupDataOnTable() {
         val progressBar = binding.tableComponent.progressBar
         val emptyState = binding.tableComponent.emptyState
@@ -538,13 +570,35 @@ class ControlOnlineActivity(
         }
     }
 
+    private fun obtenerTodosLosActivosEmpresa(idEmpresa: Int) {
+        lifecycleScope.launch {
+            val activos = activoRepository.obtenerTodosLosActivosEmpresa(idEmpresa)
+
+            activos
+                .onSuccess { lista ->
+                    activosCompanyList = lista as MutableList<ObtenerActivosOSSDTO>
+                }
+                .onFailure { e ->
+                    Log.d("ACTIVOS", "ERROR AL TRAER TODOS LOS ACTIVOS DE LA EMPRESA ${e}")
+
+                    Toast.makeText(this@ControlOnlineActivity, "Error al cargar los activos", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
     private fun obtenerActivos(tagRfid: String) {
         lifecycleScope.launch {
-            val response = activoRepository.obtenerActivos(tagRfid)
+            val response = activoRepository.obtenerActivos(tagRfid,idCompany)
             response
                 .onSuccess { lista ->
 
-                    activoList = lista as MutableList<Activo>
+                    subSectorName = lista!!.subsector
+
+                    setupNombreSubSector()
+
+                    Log.d("ACTIVOS", "${lista}")
+
+                    activoList = lista!!.activosDTO as MutableList<Activo>
 
                     idSubsectorControl = activoList[0].idSubsector
 
@@ -566,9 +620,36 @@ class ControlOnlineActivity(
 
     private fun crearControl() {
         lifecycleScope.launch {
+
+            val epcsLeidos = listTagsLeidosControl.map { it.TID }.toSet()
+
+            activosCompanyList.forEach { activo ->
+                if (activo.tagRfid in epcsLeidos && activo.idSubsector != activoList[0].idSubsector) {
+                    Log.d("ACTIVO DE OTRO SECTOR ENCONTRADO", "${activo.name} ${activo.idSubsector} SECTOR CONTROLADO ${activoList[0].idSubsector}")
+
+                    activoListEncontradosdeOtroSector.add(activo)
+                }
+            }
+
+            if (activoListEncontradosdeOtroSector.size > 0) {
+
+                lifecycleScope.launch {
+                    val modal = ActivosEncontradosSSDialog(
+                        this@ControlOnlineActivity,
+                        activoListEncontradosdeOtroSector,
+                        activoRepository
+                    )
+                    modal.setOnDismissListener {
+                        activoListEncontradosdeOtroSector.clear()
+                    }
+                    modal.show()
+                }
+
+            }
+
             val timestamp = Instant.now().epochSecond
 
-            val reponse = registroControlRepository.guardarRegistroControl(activoList[0].idSubsector, timestamp, 1)
+            val reponse = registroControlRepository.guardarRegistroControl(activoList[0].idSubsector, timestamp, idCompany) //////CAMBIARRR
             reponse
                 .onSuccess { id ->
                     Log.d("REGISTRO CONTROL CREADO CON EXITO", "se creo CON EL ID ${id}")
@@ -587,16 +668,15 @@ class ControlOnlineActivity(
 
     private fun crearDetallesControlEnCantidad(idControl: Int) {
         lifecycleScope.launch {
-            // Paso 1: Crear la lista de DTOs
             val detallesList = activoList.map { activo ->
-                // Normalizamos el status
+
                 val status = if (activo.encontrado != "available") "notAvailable" else activo.encontrado!!
 
                 CrearDetalleControlDTO(
                     idControl = idControl,
                     idActivo = activo.id,
                     status = status,
-                    idAuditor = 1015 // o el que corresponda
+                    idAuditor = idUsuario
                 )
             }
 
@@ -623,6 +703,7 @@ class ControlOnlineActivity(
         listTagsLeidos.clear()
         activoList.clear()
         idSubsectorControl = 0
+        subSectorName = ""
+        setupNombreSubSector()
     }
-
 }

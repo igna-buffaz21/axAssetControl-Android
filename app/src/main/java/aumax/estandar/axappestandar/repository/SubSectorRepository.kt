@@ -16,11 +16,12 @@ import retrofit2.Response
 class SubSectorRepository(
     private val tokenManager: TokenManager,
     private val subSectorApiService: SubSectorApiService,
-    private val context: Context
+    private val context: Context,
 ) {
 
     private val db = DataBaseProvider.getDataBase(context)
     private  val subSectorDAO = db.subsectorDao()
+    private var listSubsectores: MutableList<SubSector> = ArrayList()
 
     suspend fun obtenerSectores(idSector: Int, idEmpresa: Int) : Result<List<SubSector>?> {
         return try {
@@ -28,6 +29,13 @@ class SubSectorRepository(
 
             if (response.isSuccessful) {
                 val subsectores = response.body()
+
+                /*subsectores!!.forEach { subsector ->
+                    if (subsector.tagRfid != null) {
+                        listSubsectores.add(subsector)
+                    }
+                }*/
+
                 Log.d("SUBSECTORES", "okey: ${subsectores}")
                 Result.success(subsectores)
             }
@@ -111,5 +119,7 @@ class SubSectorRepository(
             Result.failure(e)
         }
     }
+
+
 
 }

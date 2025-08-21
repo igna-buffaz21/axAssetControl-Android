@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import aumax.estandar.axappestandar.data.local.entities.Active
 import aumax.estandar.axappestandar.data.local.entities.SubSector
+import aumax.estandar.axappestandar.utils.TagRFID
 
 @Dao
 interface SubSectorDAO {

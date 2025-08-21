@@ -5,41 +5,34 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import aumax.estandar.axappestandar.R
 import aumax.estandar.axappestandar.data.local.entities.Active
-import aumax.estandar.axappestandar.data.local.entities.SubSector
 import aumax.estandar.axappestandar.data.models.Activos.Activo
-import aumax.estandar.axappestandar.databinding.ItemActivoBinding
+import aumax.estandar.axappestandar.data.models.Activos.ObtenerActivosOSSDTO
 import aumax.estandar.axappestandar.databinding.LayoutModalActivosBinding
 import aumax.estandar.axappestandar.repository.ActivoRepository
+import aumax.estandar.axappestandar.utils.adapters.ActivoControlAdapter
 import aumax.estandar.axappestandar.utils.adapters.ActivosAdapter
+import aumax.estandar.axappestandar.utils.adapters.ObtenerActivosOSS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ModalActivosDialog(
+class ActivosEncontradosSSDialog(
     context: Context,
-    private val subSector: aumax.estandar.axappestandar.data.models.SubSector.SubSector,
+    private val activos: List<ObtenerActivosOSSDTO>,
     private val activosRepository: ActivoRepository
 ) : Dialog(context), CoroutineScope {
 
-    private lateinit var adapter: ActivosAdapter
+    private lateinit var adapter: ObtenerActivosOSS
     private lateinit var binding: LayoutModalActivosBinding
-    private var activosList: List<Active> = emptyList()
+    private var activosList: List<ObtenerActivosOSSDTO> = emptyList()
 
     private val job = Job()
     override val coroutineContext = Dispatchers.Main + job
@@ -82,7 +75,7 @@ class ModalActivosDialog(
 
     private fun setupViews() {
         // Configurar título y nombre del subsector
-        binding.tvModalTitle.text = subSector.name
+        binding.tvModalTitle.text = "Activos de Otro Subsector"
 
         // Configurar botón cerrar
         binding.btnCloseModal.setOnClickListener {
@@ -101,13 +94,11 @@ class ModalActivosDialog(
     }
 
     private fun setupRecyclerView() {
-        adapter = ActivosAdapter { activo ->
-            onActivoClicked(activo)
-        }
+        adapter = ObtenerActivosOSS()
 
         binding.rvActivos.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = this@ModalActivosDialog.adapter
+            adapter = this@ActivosEncontradosSSDialog.adapter
 
             // Mejorar scroll performance
             setHasFixedSize(true)
@@ -119,18 +110,13 @@ class ModalActivosDialog(
         showLoading(true)
         launch {
             try {
-                val response = activosRepository.obtenerActivosBD(subSector.id)
+                activosList = activos
 
-                response
-                    .onSuccess { lista ->
-                        activosList = lista ?: emptyList()
-                        updateUI()
-                    }
-                    .onFailure { error ->
-                        activosList = emptyList()
-                        updateUI()
-                        showError("Error al cargar activos: ${error.message}")
-                    }
+                activosList.forEach { activo ->
+                    Log.d("LISTA DE ACTIVOS DE CONTROL OSS DTO", "${activo.name}")
+                }
+
+                updateUI()
 
             } catch (e: Exception) {
                 activosList = emptyList()
@@ -142,11 +128,11 @@ class ModalActivosDialog(
 
     private fun updateUI() {
         showLoading(false)
+
         adapter.submitList(activosList)
 
         // Manejar estado vacío con el nuevo contenedor
         binding.emptyStateContainer.visibility = if (activosList.isEmpty()) View.VISIBLE else View.GONE
-
     }
 
     private fun showLoading(show: Boolean) {
@@ -166,23 +152,13 @@ class ModalActivosDialog(
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
-    private fun onActivoClicked(activo: Active) {
-        // Manejar click en activo
-        // Por ejemplo: abrir detalle del activo, seleccionar, etc.
-        Toast.makeText(context, "Activo seleccionado: ${activo.name}", Toast.LENGTH_SHORT).show()
-        // dismiss() // Si quieres cerrar el modal al seleccionar
-    }
-
     companion object {
-        /**
-         * Factory method para crear y mostrar el modal
-         */
         fun show(
             context: Context,
-            subSector: aumax.estandar.axappestandar.data.models.SubSector.SubSector,
+            activos: List<ObtenerActivosOSSDTO>,
             activosRepository: ActivoRepository
         ) {
-            ModalActivosDialog(context, subSector, activosRepository).show()
+            ActivosEncontradosSSDialog(context, activos, activosRepository).show()
         }
     }
 }

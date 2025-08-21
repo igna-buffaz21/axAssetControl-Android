@@ -17,7 +17,7 @@ interface RegistroControlDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun crearDetalleControl(detalleControl: List<DetailControl>): List<Long>
 
-    @Query("SELECT cr.id, cr.id_subsector, cr.date, ss.name \n" +
+    @Query("SELECT cr.id, cr.id_subsector, cr.date, ss.name, cr.id_company \n" +
             "FROM control_record as cr \n" +
             "INNER JOIN subsector as ss ON cr.id_subsector = ss.id \n" +
             "WHERE cr.id_company = :id_company AND cr.sync = false AND sync = 0")

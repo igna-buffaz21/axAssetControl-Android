@@ -41,9 +41,14 @@ class ReasignarTagActivoActivity(
     private lateinit var adapter: ActivoAdapter
 
     private lateinit var activoRepository: ActivoRepository
-    private var activoList: List<Activo> = emptyList()
+
+    private var activoList: MutableList<Activo> = ArrayList()
 
     private var activoListMostrar: MutableList<Activo> = ArrayList()
+
+    private var idCompany: Int = 0
+
+    private var idUsuario: Int = 0
 
     //RFID
     private var _oAxLector: AxLector? = null
@@ -454,6 +459,11 @@ class ReasignarTagActivoActivity(
     private fun setupHeaderComponent() {
         val tokenManager = MyApplication.tokenManager
 
+        if (tokenManager.getCompanyId() != null && tokenManager.obtenerIdUsuario() != null) {
+            idCompany = tokenManager.getCompanyId()!!
+            idUsuario = tokenManager.obtenerIdUsuario()!!
+        }
+
         val username = tokenManager.obtenerNombreUsuario()
         val nombreEmpresa = tokenManager.obtenerNombreEmpresa()
         binding.header.tvCompanyName.text = nombreEmpresa
@@ -478,13 +488,12 @@ class ReasignarTagActivoActivity(
 
     private fun obtenerActivos(tagRfid: TagRFID) {
         lifecycleScope.launch {
-            //Toast.makeText(this@AgregarTagAActivity, "Tag Recibido ${tagRfid.EPC}", Toast.LENGTH_SHORT).show()
-            val response = activoRepository.obtenerActivos(tagRfid.TID.toString())
+            val response = activoRepository.obtenerActivos(tagRfid.TID.toString(), idCompany)
             response
                 .onSuccess { lista ->
                     setupDataOnTable()
 
-                    activoList = lista ?: emptyList()
+                    activoList = lista!!.activosDTO as MutableList<Activo>
                     activoListMostrar.clear()
 
                     activoList.forEach { activo ->
@@ -504,7 +513,7 @@ class ReasignarTagActivoActivity(
                 }
                 .onFailure { error ->
 
-                    activoList = emptyList()
+                    activoList.clear()
                     activoListMostrar.clear()
 
                     Log.d("ERROR AL OBTENER LOS ACTIVOS", "ERROR: ${response}")
@@ -518,7 +527,7 @@ class ReasignarTagActivoActivity(
 
     private fun guardarTag(activo: Activo, tagCode: TagRFID) {
         lifecycleScope.launch {
-            val response = activoRepository.asigarTagRfidActivo(tagCode.TID, activo.id, 1)
+            val response = activoRepository.asigarTagRfidActivo(tagCode.TID, activo.id, idCompany)
 
             response
                 .onSuccess {

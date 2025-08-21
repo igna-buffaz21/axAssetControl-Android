@@ -16,4 +16,7 @@ interface ActivoDAO {
 
     @Query("SELECT * FROM active WHERE id_subsector = :id")
     suspend fun obtenerActivosBD(id: Int) : List<Active>
+
+    @Query("SELECT name FROM subsector WHERE tag_rfid = :tagRfid AND id_company = :idCompany")
+    suspend fun obtenerNombreSubSector(tagRfid: String, idCompany: Int) : String
 }

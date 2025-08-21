@@ -38,7 +38,7 @@
             android:id="@+id/tv_activo_codigo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ACT001"
+            android:text="ESTADO"
             android:textSize="12sp"
             android:textColor="#666666"
             android:background="@drawable/codigo_background"

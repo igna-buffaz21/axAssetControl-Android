@@ -42,6 +42,9 @@ class ReasignarActivoActivity(
     private var ActivoAReasginar: Activo? = null
     private var subSectorAsignar: SubSector? = null
 
+    private var idCompany: Int = 0
+
+    private var idUsuario: Int = 0
 
     //RFID
     private var _oAxLector: AxLector? = null
@@ -110,6 +113,11 @@ class ReasignarActivoActivity(
 
     private fun setupHeaderComponent() {
         val tokenManager = MyApplication.tokenManager
+
+        if (tokenManager.getCompanyId() != null && tokenManager.obtenerIdUsuario() != null) {
+            idCompany = tokenManager.getCompanyId()!!
+            idUsuario = tokenManager.obtenerIdUsuario()!!
+        }
 
         val username = tokenManager.obtenerNombreUsuario()
         val nombreEmpresa = tokenManager.obtenerNombreEmpresa()
@@ -259,7 +267,7 @@ class ReasignarActivoActivity(
                     }
                     Handler(Looper.getMainLooper()).postDelayed({
                         if (listTagsLeidosA.size == 1 && leerTag) {
-                            obtenerActivoPorRfid(tagRFID, 1)
+                            obtenerActivoPorRfid(tagRFID, idCompany)
 
                             leerTag = false
                             listTagsLeidosA.clear()
@@ -305,7 +313,7 @@ class ReasignarActivoActivity(
                     Handler(Looper.getMainLooper()).postDelayed({
                         if (listTagsLeidosSS.size == 1 && leerTagSS) {
                             leerTagSS = false // bloquea antes de limpiar o llamar
-                            obtenerSubSectorPorRfid(tagRFID, 1)
+                            obtenerSubSectorPorRfid(tagRFID, idCompany)
                             listTagsLeidosSS.clear()
                             resetBTNSS()
                         } else {
