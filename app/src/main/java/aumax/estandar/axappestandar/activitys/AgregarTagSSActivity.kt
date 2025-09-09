@@ -79,7 +79,7 @@ class AgregarTagSSActivity(
                         _oAxLector?.IniciarLecturaRFID() //acción a ejecutar
                     }
                     else {
-                        Toast.makeText(this@AgregarTagSSActivity, "Lectura no iniciada, presione en Leer Tag", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AgregarTagSSActivity, "Lectura no iniciada, presione un subsector para comenzar la lectura", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -356,22 +356,29 @@ class AgregarTagSSActivity(
 
         adapter.onAddClick = { subSector ->
 
-            if (Configuracion.potenciaRFID != 5) {
-                Log.d("CAMBIANDO POTENCIA RFID", "SE ESTA CAMBIANDO LA POTENCIA A 5")
+            if (!leerTag) {
+                if (Configuracion.potenciaRFID != 5) {
+                    Log.d("CAMBIANDO POTENCIA RFID", "SE ESTA CAMBIANDO LA POTENCIA A 5")
 
-                _oAxLector?.DetenetLecturRFID()
+                    _oAxLector?.DetenetLecturRFID()
 
-                _oAxLector?.LimpiarChainway()
+                    _oAxLector?.LimpiarChainway()
 
-                Configuracion.potenciaRFID = 5 ///VER
+                    Configuracion.potenciaRFID = 5 ///VER
 
-                _oAxLector?.IniciarLecturaRFID()
+                    _oAxLector?.IniciarLecturaRFID()
+
+                }
+
+                leerTag = true
+
+                subSectorAsignar = subSector
+            }
+            else {
+
+                leerTag = false
 
             }
-
-            leerTag = true
-
-            subSectorAsignar = subSector
 
             //Toast.makeText(this@AgregarTagSSActivity, "Leyendo Tag para ${subSector.name}", Toast.LENGTH_SHORT).show()
         }

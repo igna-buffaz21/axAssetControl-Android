@@ -81,8 +81,17 @@ class ReasignarTagActivoActivity(
                         _oAxLector?.IniciarLecturaRFID() //acción a ejecutar
                     }
                     else {
-                        Toast.makeText(this@ReasignarTagActivoActivity, "Lectura no iniciada, presione Leer Tag Subsector", Toast.LENGTH_SHORT).show()
-                    }
+                        when {
+                            !leerTagSS && !leerTagA -> {
+                                Toast.makeText(this@ReasignarTagActivoActivity, "Lectura no iniciada, Lectores desactivados", Toast.LENGTH_SHORT).show()
+                            }
+                            !leerTagSS -> {
+                                Toast.makeText(this@ReasignarTagActivoActivity, "Lectura no iniciada, Presione en Leer Tag Subsector", Toast.LENGTH_SHORT).show()
+                            }
+                            !leerTagA -> {
+                                Toast.makeText(this@ReasignarTagActivoActivity, "Lectura no iniciada, Presione un activo para comenzar la lectura", Toast.LENGTH_SHORT).show()
+                            }
+                        }                    }
                 }
             }
         })
@@ -434,23 +443,29 @@ class ReasignarTagActivoActivity(
 
         adapter.onAddClick = { activo ->
 
-            if (Configuracion.potenciaRFID != 5) {
-                Log.d("CAMBIANDO POTENCIA RFID", "SE ESTA CAMBIANDO LA POTENCIA A 5")
+            if (!leerTagA) {
+                if (Configuracion.potenciaRFID != 5) {
+                    Log.d("CAMBIANDO POTENCIA RFID", "SE ESTA CAMBIANDO LA POTENCIA A 5")
 
-                _oAxLector?.DetenetLecturRFID()
+                    _oAxLector?.DetenetLecturRFID()
 
-                _oAxLector?.LimpiarChainway()
+                    _oAxLector?.LimpiarChainway()
 
-                Configuracion.potenciaRFID = 5 ///VER
+                    Configuracion.potenciaRFID = 5 ///VER
 
-                _oAxLector?.IniciarLecturaRFID()
+                    _oAxLector?.IniciarLecturaRFID()
+
+                }
+
+                leerTagA = true
+
+                activoAAsignar = activo
+            }
+            else {
+
+                leerTagA = false
 
             }
-
-            leerTagA = true
-
-            activoAAsignar = activo
-
             //Toast.makeText(this@AgregarTagAActivity, "Leyendo tag para ${activo.name}", Toast.LENGTH_SHORT).show()
 
         }
